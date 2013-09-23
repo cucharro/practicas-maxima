@@ -1,0 +1,368 @@
+
+\documentclass[11pt]{book}
+
+
+\usepackage{sldoc}
+
+\usepackage{sldoc}
+\def\RR{\mathbb{R}}
+\def\CC{\mathbb{C}}
+\def\QQ{\mathbb{Q}}
+\def\ZZ{\mathbb{Z}}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{coro}[teor]{Corolario}
+
+\begin{document}
+
+%----------------------------------------------------------------------
+\chapter{Representación gráfica de funciones de varias variables}
+%----------------------------------------------------------------------
+
+\begin{contenidos}
+\item Representación gráfica de superficies y curvas en $\RR^3$.
+\item Representación de varios objetos geométricos en una misma gráfica.
+ \end{contenidos}
+
+En esta práctica utilizamos  las órdenes que nos proporciona el
+paquete \expresion{draw} para representar superficies y curvas alabeadas.
+Este paquete es un interfaz que comunica Maxima con Gnuplot. Para poder utilizar las órdenes de \expresion{draw}, hay que cargarlo previamente con la orden \expresion{load(draw)}.
+
+\begin{maximasession}
+load(draw)$
+\maximaoutput*
+\i14.  load(draw)$ \\
+\end{maximasession}
+
+
+a orden \expresion{draw3d} construye un objeto que define una escena en tres dimensiones. Nosotros utilizaremos esta orden para representar superficies y cuevas alabeadas. Para ver más detalles sobre curvas y superficies consulta la bibliografía.
+
+
+
+
+
+\section{Representación gráfica de superficies y curvas en $\RR^3$}
+
+las ecuaciones de las superficies pueden venir dadas de tres formas diferentes y \expresion{Maxima} tiene órdenes para cada manera.
+
+Para representar la superficie de ecuación $z=f(x,y)$,
+empleamos  la orden \expresion{explicit}. Por ejemplo, 
+ la superficie dada por $f(x,y)=\sen (x^2+y^2)$ en el
+conjunto $\{(x,y)\in\RR^2/-2\leq x\leq 2,\ -2\leq y\leq 2\}$, escribimos:
+
+\begin{maximasession}
+draw3d(color=green,
+       explicit(sin(x^2+y^2),x,-2,2,y,-2,2));
+\maximaoutput*
+\i15.  draw3d(color=green,
+       explicit(sin(x^2+y^2),x,-2,2,y,-2,2)); \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_3.png}
+\end{center}
+
+Para representar una superficie de ecuación 
+$F(x,y,z)=0$, empleamos la orden
+\expresion{implicit}. Por ejemplo, representamos el cono de ecuación $z^2=x^2+y^2$, en el conjunto $\{(x,y,z)\in\RR^3/-3<x<3,\ -3<y<3,\ -3<z<3\}$:
+\begin{maximasession}
+draw3d(color=green,
+       implicit(z^2=x^2+y^2,x,-3,3,y,-3,3,z,-3,3));
+\maximaoutput*
+\i16.  draw3d(color=green,
+       implicit(z^2=x^2+y^2,x,-3,3,y,-3,3,z,-3,3)); \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_4.png}
+\end{center}
+Otro ejemplo, el plano $y=1$ en $\{(x,y,z)\in\RR^3/-3<x<3,\ -3<y<3,\ -3<z<3\}$:
+
+\begin{maximasession}
+draw3d(color=green,
+       implicit(y=1,x,-3,3,y,-3,3,z,-3,3));
+\maximaoutput*
+\i17.  draw3d(color=green,
+       implicit(y=1,x,-3,3,y,-3,3,z,-3,3)); \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_5.png}
+\end{center}
+
+ Para representar una superficie dada en ecuaciones  paramétricas
+ $$x=f_1(u,v)\ y=f_2(u,v)\ z=f_3(u,v),\, u,\ v\in\RR ,$$ se utiliza la orden \expresion{parametric}\expresion{surface}.
+ Por ejemplo, las ecuaciones  paramétricas del cilindro de ecuación $x^2+y^2=4$, son $$\left\{\begin{array}{l}x=2\, \cos(u)\\y=2\, \sen (u)\\z=v,\ 0<u<2\pi,\ v\in\RR .\end{array}\right.$$
+
+\begin{maximasession}
+draw3d(color=green,
+       parametric_surface(2*cos(u),2*sin(u),v,u,0,2*%pi,v,0,3));
+\maximaoutput*
+\i18.  draw3d(color=green,
+       parametric_surface(2*cos(u),2*sin(u),v,u,0,2*%pi,v,0,3)); \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_2.png}
+\end{center}
+\end{itemize}
+
+
+
+Para representar curvas en el espacio usamos la orden \expresion{parametric}. Por ejemplo, la hélice de ecuaciones paramétricas $$\left\{\begin{array}{l}x=2\, \cos t\\y=2\, \sen t,\\t,\quad  0<t<10\,\pi\end{array}\right. $$ 
+
+\begin{maximasession}
+draw3d(nticks=100,color=green, parametric(2*cos(t),2*sin(t),t,t,0,10*%pi));
+\maximaoutput*
+\i19.  draw3d(nticks=100,color=green, parametric(2*cos(t),2*sin(t),t,t,0,10*%pi)); \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_6.png}
+\end{center}
+
+\section{Representación gráfica de varios objetos a la vez}
+
+Una curva puede venir dada como intersección de dos
+superficies. Por ejemplo, consideramos la superficie dada por la función $f(x,y)=xy$ y el cilindro de ecuación $x^2+y^2=25$.
+
+Las ecuaciones paramétricas de la curva  intersección de las dos superficies es: $$\left\{\begin{array}{l}x=5\, \cos t\\y=5\, \sen t\\z=25\, \cos t\sen t,\ 0<t<2\pi .\end{array}\right.$$
+ Representamos a continuación la superficie $z=f(x,y)$ en el conjunto $\{(x,y)\in\RR^2/-6<x<6,\ -6<y<6\}$, junto con la curva intersección:
+
+\begin{maximasession}
+load(draw)$
+draw3d(color=green,
+       explicit(x*y,x,-6,6,y,-6,6),
+       color=red,
+       parametric(5*cos(t),5*sin(t),25*cos(t)*sin(t),t,0,2*%pi)); 
+\maximaoutput*
+\i20.  load(draw)$ \\
+\i21.  draw3d(color=green,
+       explicit(x*y,x,-6,6,y,-6,6),
+       color=red,
+       parametric(5*cos(t),5*sin(t),25*cos(t)*sin(t),t,0,2*%pi));  \\
+\end{maximasession}
+\begin{center}
+\grafica{loreto/s_1.png}
+\end{center}
+
+Podemos, además, representar puntos con la orden \expresion{point}, en distintos tamaño, formas, color, etc. Por ejemplo, realizamos un gráfico añadiendo los puntos
+$$(-5/\sqrt{2},5/\sqrt{2},-25/2),\
+                (5/\sqrt{2},5/\sqrt{2}, 25/2),\ 
+                (5/\sqrt{2},-5/\sqrt{2},-25/2),\  
+                (-5/\sqrt{2},-5/\sqrt{2},25/2)$$
+a la gráfica anterior:
+
+
+\begin{maximasession}
+load(draw)$
+draw3d(/*superficie*/
+       color=green,
+       explicit(x*y,x,-6,6,y,-6,6),
+       /*curva*/
+       color=red,
+       parametric(5*cos(t),5*sin(t),25*cos(t)*sin(t),t,0,2*%pi),
+       /*puntos*/
+       color=black,
+       point_size=2,
+       point_type=filled_circle
+            ); 
+\maximaoutput*
+\i20.  load(draw)$ \\
+\i21.  draw3d(/*superficie*/
+       color=green,
+       explicit(x*y,x,-6,6,y,-6,6),
+       /*curva*/
+       color=red,
+       parametric(5*cos(t),5*sin(t),25*cos(t)*sin(t),t,0,2*%pi),
+        /*puntos*/
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[-5/sqrt(2),5/sqrt(2),-25/2],
+                [ 5/sqrt(2),5/sqrt(2), 25/2],
+                [5/sqrt(2),-5/sqrt(2),-25/2], 
+                [-5/sqrt(2),-5/sqrt(2),25/2]]));  \\
+\end{maximasession}
+
+\begin{center}
+\grafica{loreto/s9.png}
+\end{center}
+
+\begin{ejercicios}
+
+
+
+\item \begin{enumerate}
+\item Escribe unas ecuaciones paramétricas
+$$\left\{\begin{array}{l}x=f_1(u,v)\\
+         y=f_2(u,v)\\
+         z=f_3(u,v),\ u,v\in\RR\end{array}\right. ,$$ del plano de  ecuación $x+z=3$.
+\item Representa gráficamente (en coordenadas paramétricas) ese plano en el conjunto
+$$\{(u,v)\in\RR^2/-1<u<1,\ -2<v<2\}.$$ 
+
+\end{enumerate}
+\item Unas ecuaciones paramétricas del paraboloide de ecuación $x^2+y²=z$ son:
+$$\left\{\begin{array}{l}x=u\\y=v\\z=u^2+v^2,\ u,v\in\RR\end{array}\right..$$
+Representa la superficie para $(u,v)\in [-2,2]\times [-2,2]$
+\item Sean las superficies de ecuaciones $z=xye^{-(x^2+y^2)}$ y $x+y=1$. 
+\begin{enumerate}
+\item Reproduce el gráfico siguiente, que representa la intersección de las superficies en un conjunto adecuado.
+\begin{center}
+\grafica{loreto/s_8.png}
+\end{center}
+\item Calcula las ecuaciones paramétricas de la curva intersección de las dos superficies y reproducir el gráfico siguiente  en un conjunto adecuado.
+\begin{center}
+\grafica{loreto/s_7.png}
+\end{center}
+\end{enumerate}
+\item Idem anterior para las superficies $z=xy$ y $x^2+y^2=1$.
+\end{ejercicios}
+
+
+\begin{bibliografia}
+
+\item http://riotorto.users.sourceforge.net/gnuplot
+
+\end{bibliografia}
+
+\end{document}
+
+
+
+
+\end{document}
+
+\section{Cambio de coordenadas }
+
+
+Consideramos a continuación otros sistemas de representación de
+coordenadas en el espacio, sistemas de coordenadas cilíndricas y
+esféricas. Muchas superficies son más fáciles de representar y sus
+ecuaciones tienen una expresión más sencilla en estas coordenadas. 
+
+En  coordenadas rectangulares, un punto $P$ de coordenadas
+culíndricas $(\rho ,\theta ,z)$, es  $$\left\{\begin{array}{l}x=\rho\, \cos(\theta
+  )\\y=\rho\, \sen (\theta )\\z=z\end{array}\right.$$ 
+
+La ecuación de una superficie que en coordenadas rectangulares es
+$F(x,y,z)=0$, la pasamos a coordenadas cilíndricas usando una regla
+que llamamos \expresion{cambio} y definimos una función $ecc$ que
+aplica la regla a una ecuación en coordenadas rectangulares:
+
+
+\begin{maximasession}
+cambio:[x=rho*cos(theta),y=rho*sin(theta)]$
+ecc(ecr):=subst(cambio,ecr)$
+\maximaoutput*
+\i5.  cambio:[x=rho*cos(theta),y=rho*sin(theta)]$ \\
+\i6.  ecc(ecr):=subst(cambio,ecr)$ \\
+\end{maximasession}
+
+En coordenadas cilíndricas se pueden representar las superficies
+cilíndricas como el cilindro y el paraboloide:
+
+\begin{maximasession}
+ecc(x^2+y^2=9);
+trigsimp(%);
+ecc(x^2+y^2=4*z)$
+trigsimp(%);
+\maximaoutput*
+\i7.  ecc(x^2+y^2=9); \\
+\o7.  \rho^2\,\left(\sin \vartheta\right)^2+\rho^2\,\left(\cos \vartheta\right)^2=9 \\
+\i8.  trigsimp(%); \\
+\o8.  \rho^2=9 \\
+\i9.  ecc(x^2+y^2=4*z)$ \\
+\i10.  trigsimp(%); \\
+\o10.  \rho^2=4\,z \\
+\end{maximasession}
+
+Gráficamente se pueden representar usando \expresion{cycindrical}, que
+representa la superficie $\rho =f(\theta ,z)$ en coordenadas
+cilíndricas:
+
+%\expresion{draw3d(cylindrical(3,z,-2,2,theta,0,2*%pi));}
+
+\section{Representacion de superficies cuyas ecuaciones vienen dadas  en parametricas}
+
+Una superficie puede también venir dada en coordenadas paramétricas
+ $$x=f_1(u,v)\ y=f_2(u,v)\ z=f_3(u,v),$$
+para cada dos valores $(u,v)$ se obtienen las coordenadas de un punto
+de la superficie $(x,y,z)$. 
+
+{\bf{Ejemplo:}} El cilindro de ecuación 
+
+\section{Parametrizacion de algunas  superficies}
+
+{\bf{Ejemplo:}} Si la superficie que tenemos viene dada de forma explícita $z=f(x,y)$,
+entonces una posible parametrización
+es $$\left\{\begin{array}{l}x=u\\y=v\\z=f(u,v)\end{array}\right .$$
+
+{\bf{Ejemplo:}} Podemos representar en coordenadas paramétricas un plano de ecuación $ax+by+cz=d$
+y representarlo gráficamente. Por ejemplo, el plano $x+z=3$, en
+coordenadas paramétricas es $$x=u,\ y=v,\ z=3-u.$$ Si lo representamos
+en el dominio 
+
+\begin{maximasession}
+load(draw)$
+draw3d(parametric_surface(u,v,3-u,u,-3,3,v,-3,3));
+
+
+\maximaoutput*
+\i2.  load(draw)$ \\
+\p
+
+
+\i3.  draw3d(parametric_surface(u,v,3-u,u,-3,3,v,-3,3)); \\
+\o3.  \left[ \mathrm{gr3d}\left(\mathrm{parametric\_surface}\right) \right] \\
+\end{maximasession}
+
+{\bf{Ejemplo:}} El paraboloide $x²+y²=z$. La parametrización
+es $$x=u,\ y=v,\ z=u²+v².$$
+
+\begin{maximasession}
+draw3d(color=green,parametric_surface(u,v,5-u^2-v^2,u,-2,2,v,-2,2));
+\maximaoutput*
+\i11.  draw3d(color=green,parametric_surface(u,v,5-u^2-v^2,u,-2,2,v,-2,2)); \\
+\o11.  \mathrm{draw3d}\left(\mathrm{color}=\mathrm{green} , \mathrm{parametric\_surface}\left(u , v , -v^2-u^2+5 , u , -2 , 2 , v , -2 , 2\right)\right) \\
+\end{maximasession}
+
+
+Si la ecuación viene dada de forma implícita, podemos parametrizarla
+usando coordenadas cilíndricas o esféricas. 
+
+
+
+ 
+{\bf{Ejemplo:}} El cilindro $x^2+y^2=r²$, en coordenadas cilíndricas 
+
+$$\left\{\begin{array}{l}x=r\, \cos(\theta )\\y=r\,
+    \sen (\theta )\\z=z\, \end{array}\right ., r_1(\theta )\leq \theta
+\leq ,\
+r_2(\theta ),            \ 0\leq \theta \leq  2\pi .$$
+
+\begin{maximasession}
+load("draw");
+draw3d(parametric_surface(r*cos(t),r*sin(t),r,r,-2,2,t,0,2*%pi));
+\maximaoutput*
+\i12.  load("draw"); \\
+\o12.  \mbox{{}/usr/share/maxima/5.13.0/share/draw/draw.lisp{}} \\
+\i13.  draw3d(parametric_surface(r*cos(t),r*sin(t),r,r,-2,2,t,0,2*%pi)); \\
+\o13.  \left[ \mathrm{gr3d}\left(\mathrm{parametric\_surface}\right) \right] \\
+\end{maximasession}
+
+{\bf{Ejemplo:}} Otro cilindro $x²+z²=4$.
+
+{\bf{Ejemplo:}} La  esfera $x^2+y^2+z^2=r^2$ en 
+coordenadas esféricas $$\begin{array}{l}x=r\, \sen \theta
+  \cos\phi\\y=r\, \sen\theta\cos\phi\\y=r\, \cos\theta\end{array}$$
+{\bf{Ejemplo:}} El cono de ecuación $z²=x²+y²$ en cilíndricas
+es $$x=r\, cos\theta,\ y=r\, \sen\theta,\ z=r$$ $r_1(\theta )\leq
+r\leq r_2(theta ),\ 0<\theta \leq 2\pi.$
+
+{\bf{Ejemplo:}} El paraboloide de
+ecuación $$\frac{x^2}{a^2}+\frac{y^2}{b^2}+\frac{z^2}{c^2}=1,$$ tiene
+las siguientes ecuaciones paramétricas:
+$$\begin{array}{l}x=a\cos\theta\cos\phi\\y=b\cos\theta\sen\phi\\z=c\sen\theta\end{array}$$
+
+\begin{ejercicios}
+  \item Bla bla bla
+  \item Y más bla bla bla
+\end{ejercicios}
+
+\end{document}

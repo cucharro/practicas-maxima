@@ -1,0 +1,414 @@
+%
+% Fichero de ejemplo que se puede usar como plantilla para crear
+% prácticas de Maxima. Realizado para el proyecto de innovación
+% docente 2008/2009.
+%
+% IMPORTANTE: Para que el fichero compile, es necesario:
+%
+%  - Tener en la misma carpeta que el fichero .tex los ficheros:
+%    * sldoc.sty
+%    * wxmaxima-icon.png
+%    * info-gnome.png  
+%    * document-prperties-gnome.png
+%
+%
+%  - Además, en este ejemplo se usan dos ficheros gráficos:
+%    wxmaxima-entrada.png y x2sqrtx.png. Estos ficheros pueden
+%    borrarse luego, lo normal es que cada uno utilice las gráficas
+%    que les venga mejor.
+%
+%  - En principio, hay que tener instalado el paquete LaTeX
+%    emaxima. Esto es para poder los entornos maximasession
+%    (\begin{maximasession} ... \end{maximasession}, ver más abajo).
+%    Aunque, por si alguien no lo puede instalar, he incluido el
+%    fichero emaxima.sty
+%
+%    Se recomienda usar estos entornos, porque así obtenemos todos un
+%    resultado uniforme. Aunque (si se quiere) se puede comenzar por
+%    escribir el código Maxima "a mano", sin entornos
+%    maximasession. Pero al final alguien tendrá que encargarse de
+%    reescribirlos usando éstos.
+%
+
+\documentclass[11pt]{book}
+
+
+\usepackage{sldoc}
+\def\RR{\mathbb{R}}
+\def\CC{\mathbb{C}}
+\def\QQ{\mathbb{Q}}
+\def\ZZ{\mathbb{Z}}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{coro}[teor]{Corolario}
+\begin{document}
+
+%----------------------------------------------------------------------
+\chapter{Cálculo y clasificación de puntos críticos para 
+funciones de dos variables}
+%----------------------------------------------------------------------
+
+\begin{contenidos}
+\item Definición de extremo relativo de funciones de dos variables
+\item Condición necesaria de extremo relativo. Punto crítico
+\item Definición de matriz hessiana y hessiano
+\item Criterio para la clasificación de los puntos críticos. Punto de silla
+\end{contenidos}
+
+
+
+En esta práctica calculamos los puntos críticos de una función de dos variables $f(x,y)$ y utilizamos el criterio de las derivadas segundas para averiguar la naturaleza de cada unao de ellos. Realizamos un gráfico que contiene la gráfica de la función y los puntos en él. Finalmente comprobamos gráficamente que  el punto de silla no  puede ser extremo relativo.
+
+
+\section{Cálculo y clasificación de puntos críticos}
+
+Recordemos las definiciones de máximo y mínimo relativo.
+ Se dice que $f(x,y)$ definida en un dominio $R$
+tiene un {{\it{máximo relativo}} en el punto  $(a,b)\in R$  si se verifica 
+$f(a,b)\geq
+f(x,y)$ para todo $(x,y)$ en cierto entorno de $(a,b)$.
+ La superficie tiene entonces un punto
+máximo
+ relativo en 
+$(a,b,f(a,b))$. De
+forma similar, $f(x,y)$ tiene un mínimo relativo en $(a,b)\in R$  si se
+verifica $f(a,b)\leq f(x,y)$ para todo $(x,y)$ en cierto entorno de $(a,b)$ incluido en $R$. La superficie
+tiene entonces  un punto mínimo relativo en  $(a,b,f(a,b))$.
+A los máximos y mínimos relativos se les llama extremos relativos.
+
+
+
+
+Consideramos a continuación, por ejemplo,   la función $f(x,y)=x\ y\ e^{-x²-y²}.$
+ 
+ 
+
+Recordemos que  si $f$ tiene un extremo relativo en $(a,b)\in R$ y existen las derivadas parciales $f_x(a,b),\ f_y(a,b)$, entonces
+$f_x(a,b)=f_y(a,b)=0.$ Por lo tanto, debemos buscar los extremos en el conjunto
+de puntos  $\{(x,y)\in\RR^2/f_x(x,y)=0,f_y(x,y)=0\},$ que es el conjunto de
+ puntos críticos de $f(x,y)$.
+
+
+
+A continuación vamos a definir la función $f$, calculamos
+todos los puntos críticos de $f$ y los introducimos en   una lista que llamamos \expresion{pc}.
+
+\begin{maximasession}
+f(x,y):=x*y*%e^(-x^2-y^2)$
+pc:solve([diff(f(x,y),x),diff(f(x,y),y)],[x,y]);
+\maximaoutput*
+\i1.  f(x,y):=x*y*%e^(-x^2-y^2)$ \\
+\i2.  pc:solve([diff(f(x,y),x),diff(f(x,y),y)],[x,y]); \\
+\o2.  \left[ \left[ x=0 , y=0 \right]  , \left[ x=-{{1}\over{\sqrt{2}}} , y=-{{1}\over{\sqrt{2}}} \right]  , \left[ x={{1}\over{\sqrt{2}}} , y=-{{1}\over{\sqrt{2}}} \right]  , \left[ x=-{{1}\over{\sqrt{2}}} , y={{1}\over{\sqrt{2}}} \right]  , \left[ x={{1}\over{\sqrt{2}}} , y={{1}\over{\sqrt{2}}} \right]  \right] \\
+\end{maximasession}
+
+La lista \expresion{pc} contiene  cinco puntos:
+
+$$pc=\left\{(0,0),\, \left (-\frac{1}{\sqrt{2}},-\frac{1}{\sqrt{2}}\right ),\  \left (\frac{1}{\sqrt{2}},-\frac{1}{\sqrt{2}}\right ),\ 
+ \left (-\frac{1}{\sqrt{2}},\frac{1}{\sqrt{2}}\right ),\ 
+ \left (\frac{1}{\sqrt{2}},\frac{1}{\sqrt{2}}\right )\right\}.$$
+
+
+Para decidir si estos puntos son máximos, mínimos o puntos de silla,
+aplicamos el siguiente teorema de clasificación.
+
+Si existen $f_{xx}(a,b),$
+$ f_{xy}(a,b)$, $f_{yx}(a,b),$  $f_{yy}(a,b)$, definamos la  matriz hessiana de $f$ en $(a,b)$ y se representa por $H(f)(a,b)$, a la matriz
+$$H(f)(a,b)=\left
+  (\begin{array}{cc}f_{xx}(a,b)&f_{xy}(a,b)\\f_{yx}(a,b)&f_{yy}(a,b)\end{array}\right
+).$$
+Al determinante de esta matriz hessiana de $f$ en $(a,b)$, $|H(f)(a,b)|$, se le llama hessiano de $f$ en $(a,b)$.
+
+
+
+Criterio de las derivadfas segundas. Supongamos que existen $f_{xx}(a,b)$, $f_{xy}(a,b),$ $f_{yx}(a,b)$, $f_{yy}(a,b)$, para  $(a,b)\in R$  punto crítico de $f$. Entonces:
+\begin{itemize}
+\item Si  $|H(f)(a,b)|>0,\ f_{xx}(a,b)>0$, entonces $f$ tiene en
+  $(a,b)$ un mínimo relativo.
+\item Si $|H(f)(a,b)|>0,\ f_{xx}(a,b)<0$, entonces $f$ tiene en
+  $(a,b)$ un máximo relativo.
+\item Si $|H(f)(a,b)|<0$, entonces $f$ tiene en $(a,b)$ un punto de
+  silla.
+\item Si $|H(f)(a,b)|=0$, el criterio no decide.
+\end{itemize}
+
+
+
+
+A continuación definimos una función  que
+llamamos  \expresion{H}, con la  expresión del hessiano de una función $f(x,y)$ en general:
+
+
+\begin{maximasession}
+H(x,y):=('diff(f(x,y),x,2)*'diff(f(x,y),y,2))-
+('diff(f(x,y),x,1,y,1)*'diff(f(x,y),x,1,y,1));
+\maximaoutput*
+\i3.  H(x,y):=('diff(f(x,y),x,2)*'diff(f(x,y),y,2))-
+('diff(f(x,y),x,1,y,1)*'diff(f(x,y),x,1,y,1)); \\
+\o3.  H\left(x , y\right)\mathbin{:=}{{d^2}\over{d\,x^2}}\,f\left(x , y\right)\,\left({{d^2}\over{d\,y^2}}\,f\left(x , y\right)\right)-{{d^2}\over{d\,x\,d\,y}}\,f\left(x , y\right)\,\left({{d^2}\over{d\,x\,d\,y}}\,f\left(x , y\right)\right) \\
+\end{maximasession}
+
+Para que, en particular, se evalúe el hessiano con la función del ejemplo, definimos  otra, a la  que llamamos \expresion{h}, con dicha evaluación:
+
+
+\begin{maximasession}
+
+
+H(x,y)$
+h(x,y):=ev(H(x,y),diff)$
+h(x,y)$
+
+\maximaoutput*
+\i4.  H(x,y)$ \\
+\i5.  h(x,y):=ev(H(x,y),diff)$ \\
+\i6.  h(x,y)$ \\
+\end{maximasession}
+
+A continuación aplicamos el criterio. Para cada uno de los puntos de la lista de puntos críticos  hacemos lo siguiente:
+\begin{itemize}
+\item Evaluamos el hessiano en el punto y decidimos si el resultado de la evaluación es positivo, negativo o cero.
+\item Si el hessiano es positivo, entonces:
+\begin{itemize}
+\item Definimos    $f_{xx}(x,y)$, que llamamos \expresion{fxx}. Esto lo hacemos una sola vez.
+\item Evaluamos la derivada segunda en el punto y decidimos  si el resultado de la evaluación es positivo, negativo o cero.
+\end{itemize}
+\end{itemize} 
+
+
+
+
+En primer lugar, consideramos  los puntos $\left (1/\sqrt{2},-1/\sqrt{2}\right ),\
+\left (-1/\sqrt{2},1/\sqrt{2}\right )$, que son, respectivamente, los elementos 3 y 4
+de la lista \expresion{pc}: 
+
+\begin{maximasession}
+is(at(h(x,y),pc[3])>0);
+is(at(h(x,y),pc[4])>0);
+fxx(x,y):=diff(f(x,y),x,2)$
+fxx(x,y)$
+is(at(fxx(x,y),pc[3])>0);
+is(at(fxx(x,y),pc[4])>0);
+
+\maximaoutput*
+\i7.  is(at(h(x,y),pc[3])>0); \\
+\o7.  \mathbf{true} \\
+\i8.  is(at(h(x,y),pc[4])>0); \\
+\o8.  \mathbf{true} \\
+\i9.  fxx(x,y):=diff(f(x,y),x,2)$ \\
+\i10.  fxx(x,y)$ \\
+\i11.  is(at(fxx(x,y),pc[3])>0); \\
+\o11.  \mathbf{true} \\
+\i12.  is(at(fxx(x,y),pc[4])>0); \\
+\o12.  \mathbf{true} \\
+\end{maximasession}
+
+Por tanto, acabamos de comprobar que:
+$$\left |H(f) (1/\sqrt{2},-1/\sqrt{2} )\right |>0,\quad
+\left |H(f)(-1/\sqrt{2},1/\sqrt{2} )\right |>0,$$
+$$f_{xx} (1/\sqrt{2},-1/\sqrt{2} )>0,\quad 
+f_{xx} (-1/\sqrt{2},1/\sqrt{2} )>0.$$
+Con lo que concluimos que la función $f$ tiene en los puntos $(1/\sqrt{2},-1/\sqrt{2}),\ (-1/\sqrt{2},1/\sqrt{2})$ 
+mínimos relativos.
+
+
+
+
+
+En segundo lugar consideramos los puntos  $(-1/\sqrt{2},-1/\sqrt{2})\, (1/\sqrt{2},1/\sqrt{2})$. Estos puntos son los elementos 2 y 5  de la lista \expresion{pc}. 
+
+\begin{maximasession}
+
+is(at(h(x,y),pc[2])>0);
+is(at(h(x,y),pc[5])>0);
+is(at(fxx(x,y),pc[2])<0);
+is(at(fxx(x,y),pc[5])<0);
+\maximaoutput*
+\i13.  is(at(h(x,y),pc[2])>0); \\
+\o13.  \mathbf{true} \\
+\i14.  is(at(h(x,y),pc[5])>0); \\
+\o14.  \mathbf{true} \\
+\i15.  is(at(fxx(x,y),pc[2])<0); \\
+\o15.  \mathbf{true} \\
+\i16.  is(at(fxx(x,y),pc[5])<0); \\
+\o16.  \mathbf{true} \\
+\end{maximasession}
+
+Con lo que hemos comprobado que:
+$$\left |H(f) (1/\sqrt{2},1/\sqrt{2} )\right |>0,\quad
+\left |H(f)(-1/\sqrt{2},-1/\sqrt{2} )\right |>0,$$
+$$f_{xx} (1/\sqrt{2},1/\sqrt{2} )<0,\quad 
+f_{xx} (-1/\sqrt{2},-1/\sqrt{2} )<0.$$
+Por tanto concluimos que la función $f$ tiene en los puntos $(1/\sqrt{2},1/\sqrt{2}),\ (-1/\sqrt{2},-1/\sqrt{2})$ 
+máximos relativos.
+
+
+Calculamos, a continuación,  los valores de los extremos relativos:
+\begin{maximasession}
+at(f(x,y),pc[2]);
+at(f(x,y),pc[3]);
+at(f(x,y),pc[4]);
+at(f(x,y),pc[5]);
+\maximaoutput*
+\i17.  at(f(x,y),pc[2]); \\
+\o17.  {{e^ {- 1 }}\over{2}} \\
+\i18.  at(f(x,y),pc[3]); \\
+\o18.  -{{e^ {- 1 }}\over{2}} \\
+\i19.  at(f(x,y),pc[4]); \\
+\o19.  -{{e^ {- 1 }}\over{2}} \\
+\i20.  at(f(x,y),pc[5]); \\
+\o20.  {{e^ {- 1 }}\over{2}} \\
+\end{maximasession}
+
+Luego los puntos $ (1/\sqrt{2},-1/\sqrt{2},-1/2e )$, $
+(-1/\sqrt{2},1/\sqrt{2},-1/2e )$ son puntos mínimos relativos de la superficie
+y los puntos $ (-1/\sqrt{2},-1/\sqrt{2},1/2e )$ y $ (1/\sqrt{2},1/\sqrt{2},1/2e )$ son 
+puntos máximos relativos de la superficie.
+
+
+Representamos  ahora la superficie $z=f(x,y)$ y los puntos donde se
+alcanzan los extremos relativos en el conjunto  $$\{(x,y)\in \RR^2/ -2\leq x\leq 2,\, -2\leq y\leq 2\}:$$
+
+
+
+\begin{maximasession}
+load("draw")$
+draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[1/sqrt(2),1/sqrt(2),f(1/sqrt(2),1/sqrt(2))],
+               [-1/sqrt(2),-1/sqrt(2),f(-1/sqrt(2),-1/sqrt(2))],
+               [-1/sqrt(2),1/sqrt(2),f(-1/sqrt(2),1/sqrt(2))],
+               [1/sqrt(2),-1/sqrt(2),f(1/sqrt(2),-1/sqrt(2))]                               ]));
+\maximaoutput*
+\i21.  load("draw")$ \\
+\i22.  draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[1/sqrt(2),1/sqrt(2),f(1/sqrt(2),1/sqrt(2))],
+               [-1/sqrt(2),-1/sqrt(2),f(-1/sqrt(2),-1/sqrt(2))],
+               [-1/sqrt(2),1/sqrt(2),f(-1/sqrt(2),1/sqrt(2))],
+               [1/sqrt(2),-1/sqrt(2),f(1/sqrt(2),-1/sqrt(2))]])); \\
+\end{maximasession}
+
+
+\imagen{loreto/e_4.png}
+
+
+\section{Reconocemos un punto de silla gráficamente}
+
+Veamos por último la naturaleza del punto $(0,0)$. Comprobamos que 
+$|H(f)(0,0)|<0$:
+
+\begin{maximasession}
+is(at(h(x,y),pc[1])<0);
+\maximaoutput*
+\i23.  is(at(h(x,y),pc[1])<0); \\
+\o23.  \mathbf{true} \\
+\end{maximasession}
+
+Concluimos entonces que $f$ tiene en $(0,0)$ un punto de silla, es decir,
+ en cierto  entorno del punto $(0,0)$ existen puntos $(x,y)$ tales que
+ $f(x,y)\geq f(0,0)=0$ y otros puntos $(x,y)$ tales que $f(x,y)\leq f(0,0)=0$.
+Veamos esto gráficamente:
+
+Sea $B=\{(x,y)\in \RR^2/x^2+y^2<1\}$ el círculo de centro $(0,0)$ y radio 1.
+
+Para los puntos del conjunto  $C_1=\{(x,y)\in\RR^2/ y=x, -1< x< 1\}\subset
+B,$ se verifica  $f(x,x)=x^2e^{-2x^2}\geq 0=f(0,0)$. La imagen por $f$ de ese conjunto es la curva de ecuaciones paramétricas
+$$\left\{\begin{array}{ll}
+    x=t& \\y=t& \\z=f(t,t),& -1<t<1.\end{array}\right ..$$
+ Gráficamente comprobamos que el punto $(0,0,0)$ es el punto que está más
+ bajo de entre todos los puntos $(x,y,f(x,y))$ tales que $(x,y)\in C_1$:
+
+
+ 
+\begin{maximasession}
+
+draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=red,
+       parametric(t,t,f(t,t),t,-1,1),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[0,0,0]]));
+
+\maximaoutput*
+\i24.  draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=red,
+       parametric(t,t,f(t,t),t,-1,1),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[0,0,0]])); \\
+
+\end{maximasession}
+\imagen{loreto/e_5.png}
+
+
+Sin embargo, para los puntos del conjunto $C_2=\{(x,y)\in\RR^2/y=-x,-1<
+x< 1\}\subset B$, se verifica $f(x,y)=-x^2e^{-x^2}\leq 0=f(0,0)$. La imagen
+por $f$ de este conjunto es la curva de ecuaciones paramétricas 
+$$\left\{\begin{array}{ll}
+    x=t&\\y=-t&\\z=f(t,-t),& -1<t<1.\end{array}\right .$$
+ Gráficamente podemos comprobar que $(0,0,0)$ es el punto de la
+ superficie que está más alto de entre todos los puntos
+ $(x,y,f(x,y)),\ (x,y)\in C_2$:
+\begin{maximasession}
+draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=red,
+       parametric(t,-t,f(t,-t),t,-1,1),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[0,0,0]]));
+
+\maximaoutput*
+\i25.  draw3d(color=green,
+       explicit(f(x,y),x,-2,2,y,-2,2),
+       color=red,
+       parametric(t,-t,f(t,-t),t,-1,1),
+       color=black,
+       point_size=2,
+       point_type=filled_circle,
+       points([[0,0,0]])); \\
+
+\end{maximasession}
+
+
+\imagen{loreto/e_6.png}
+
+
+
+
+\begin{ejercicios}
+  \item Calcula y clasifica los puntos críticos de   $f(x,y)=(2x^2+3y^2)e^{1-2x^2-y^2}$.
+
+Solución: $f$ alcanza dos máximos relativos en los puntos $(0,-1)$ y $(0,1)$,
+un mínimo relativo en $(0,0)$ y dos puntos de silla en $(-1/\sqrt{2},0)$ y $(1/\sqrt{2},0)$. La superficie representada por $f$ alcanza dos máximos en los puntos $(0,-1,3)$ y $(0,1,3)$, un mínimo en $(0,0,0)$ y dos puntos de silla en $(-1/\sqrt{2},0,1)$ y $(1/\sqrt{2},0,1)$.
+
+\item Calcula y clasifica los puntos críticos de  $f(x,y)=(x^2-y)e^{-x^2-y^2}$.
+\item Dada $f(x,y)=-x^4+3y^2-3x^2-xy$, se pide:
+\begin{enumerate}
+\item Comprueba que $f$ tiene en $(0,0)$ un punto de silla.
+\item Comprueba analítica y geométricamente que $f(x,y)\geq f(0,0)$ para los puntos del conjunto $\{(x,y)\in\RR^2/x=0\}$.
+\item Comprueba  analítica y geométricamente que $f(x,y)\leq f(0,0)$ para los puntos del conjunto $\{(x,y)\in\RR^2/y=0\}$.
+\end{enumerate}
+\end{ejercicios}
+
+
+\begin{bibliografia}
+
+
+ \item \autor{Juan de Burgos}.\titulo{Cálculo infinitesimal de varias variables}.\editorial{Mc Graw Hill}. 1999.
+\item \autor{Gerald L. Bradley, Karl Smidth}. \titulo{Cálculo de varias variables}.\editorial{Prentice Hall}. 1998.
+
+\end{bibliografia}
+
+\end{document}

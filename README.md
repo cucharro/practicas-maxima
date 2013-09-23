@@ -1,2 +1,2 @@
-maxima
-======
+Prácticas de matemáticas con Maxima
+===================================

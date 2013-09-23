@@ -1,0 +1,174 @@
+% Formato común para los apuntes de Maxima
+
+\usepackage[spanish]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+\usepackage{xspace}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+%\usepackage[vmargin=2cm,hmargin={3.5cm,3.25cm}]{geometry}
+%\usepackage{anysize}
+%\marginsize{1.5cm}{3.25cm}{2.25cm}{2.25cm}
+\usepackage[
+%paperwidth=15cm,
+%paperheight=10cm,
+%twoside,
+%outer=15mm,
+%inner=15mm,
+%includemp=true,
+vmargin=2cm,
+hmargin={1.5cm,3.25cm},
+marginparwidth=1cm,
+%marginparsep=5mm%
+]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{calc}
+\fancyheadoffset[LE,RO]{\marginparsep+\marginparwidth}
+%\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+\fancyhf{}
+\fancyhead[LE,RO]{\textit{\thepage}}
+\fancyhead[LO]{\textit{\rightmark}}
+\fancyhead[RE]{\textit{\leftmark}}
+\fancypagestyle{plain}{%
+   \fancyhead{} % get rid of headers
+   \renewcommand{\headrulewidth}{0pt} % and the line
+}
+
+\usepackage{amssymb}
+\usepackage{pgf}
+
+\usepackage{emaxima}
+
+%\newcommand{\practica}[1]{\begin{center}\Huge 1. #1\end{center}}
+\newcommand{\practica}[1]{\chapter{#1}}
+
+\newcommand{\captura}[2][scale=0.45]{\includegraphics[#1]{#2}}
+\newcommand{\icono}[2][width=32px]{\includegraphics[#1]{#2}}
+\newcommand{\grafica}[2][width=0.4\linewidth]{\fbox{\includegraphics[#1]{#2}}}
+
+\usepackage{mparhack}
+
+
+\newenvironment{ejercicios}
+{\section*{Ejercicios}
+  \marginpar{\pgfbox[left,top]{\pgfuseimage{document-properties-gnome}}}%
+  \begin{enumerate}}{\end{enumerate}}
+
+\pgfdeclareimage[width=1cm]{wxmaxima-icon}{wxmaxima-icon}
+\pgfdeclareimage[width=1cm]{info-gnome}{info-gnome}
+\pgfdeclareimage[width=1cm]{document-properties-gnome}{document-properties-gnome}
+
+\newenvironment{wxmaxima}
+{\begin{quotation}%
+    \noindent\hrulefill\textbf{\textsf{wxMaxima}}%
+    \marginpar{\pgfbox[left,top]{\pgfuseimage{wxmaxima-icon}}}%
+    \em\par}
+{\par\noindent\hrulefill%
+\end{quotation}}
+
+
+\newenvironment{contenidos}
+{\begin{quotation}%
+    \noindent\hrulefill\textbf{\textsf{Contenidos}}%
+    \marginpar{\pgfbox[left,top]{\pgfuseimage{info-gnome}}}%
+    \begin{enumerate}}
+{\end{enumerate}
+\par\noindent\hrulefill%
+\end{quotation}}
+
+
+\newcommand{\imagen}[1]{\includegraphics{img/#1}}
+\newcommand{\tecla}[1]{\fbox{\texttt{#1}}}
+\newcommand{\etiqueta}[1]{\textsf{#1}}
+\newcommand{\boton}[1]{[\textsf{#1}]}
+\makeatletter
+\def\menu#1{%
+  \def\@separador{}
+  \COMAS@do#1,\relax,
+  \def\@separador{}}
+\def\COMAS@do#1,{%
+  \ifx\relax#1\empty\else
+  \@separador\etiqueta{#1}\def\@separador{ $\!\rightarrow\!$ }%
+  \expandafter\COMAS@do\fi}
+\makeatother
+
+\newcommand{\expresion}[1]{\texttt{#1}}
+\newcommand{\orden}[1]{\expresion{#1}}
+\newcommand{\ii}[1]{\textcolor{\maximapromptcolor}{(\%i#1)}}
+\newcommand{\oo}[1]{\textcolor{\maximapromptcolor}{(\%o#1)}}
+
+\newcommand{\programfont}[1]{\textsf{\textsl{#1}}}
+\renewcommand{\Maxima}{\programfont{Maxima}\xspace}
+\renewcommand{\maxima}{\programfont{Maxima}\xspace}
+\newcommand{\wxMaxima}{\programfont{wxMaxima}\xspace}
+\newcommand{\xMaxima}{\programfont{xmaxima}\xspace}
+\newcommand{\emacs}{\programfont{Emacs}\xspace}
+\newcommand{\Macsyma}{\programfont{Macsyima}\xspace}
+\newcommand{\Mathematica}{\programfont{Mathematica}\xspace}
+\newcommand{\Maple}{\programfont{Maple}\xspace}
+\newcommand{\Matlab}{\programfont{Matlab}\xspace}
+\newcommand{\gnuplot}{\programfont{gnuplot}\xspace}
+%\newcommand{\wxmaxima}{\programfont{wxMaxima}\xspace}
+\newcommand{\xmaxima}{\programfont{xMaxima}\xspace}
+\newcommand{\texmacs}{\programfont{\TeX macs}\xspace}
+\newcommand{\wims}{\programfont{WIMS}\xspace}
+\newcommand{\axiom}{\programfont{Axiom}\xspace}
+\newcommand{\yacas}{\programfont{YACAS}\xspace}
+\newcommand{\pari}{\programfont{Pari}\xspace}
+\newcommand{\superficie}{\programfont{Superficie}\xspace}
+\newcommand{\octave}{\programfont{Octave}\xspace}
+\newcommand{\euler}{\programfont{EULER}\xspace}
+\newcommand{\tela}{\programfont{Tela}\xspace}
+\newcommand{\scilab}{\programfont{Scilab}\xspace}
+\newcommand{\R}{\programfont{R}\xspace}
+
+\newcommand{\Nset}{\sl I\kern-.27em N}
+\newcommand{\Zset}{\sl I\kern-.27em Z}
+\newcommand{\Qset}{\sl I\kern-.27em Q}
+\newcommand{\Rset}{\sl I\kern-.27em R}
+\newcommand{\Cset}{\sl I\kern-.27em C}
+
+% Idea from originalauthor.sty
+
+\newsavebox{\OriginalAuthorBox}
+\newcommand\OriginalAuthor{}
+\let\OriginalAuthor\author
+\renewcommand*{\author}[1]{%
+  \OriginalAuthor{#1}
+  \sbox{\OriginalAuthorBox}{\@author}
+}
+\newcommand{\theautor}{\usebox{\OriginalAuthorBox}}
+
+% Títulos de partes y capítulos
+\usepackage{titlesec}
+\newcommand{\bigrule}{\titlerule[0.5mm]}
+% \titleformat{\section}[display] % cambiamos el formato de los capítulos
+% {\bfseries\Huge} % por defecto se usarán caracteres de tamaño \Huge en negrita
+% {% contenido de la etiqueta
+%  \titlerule % línea horizontal
+%  \filleft % texto alineado a la derecha
+%  \LARGE Práctica\
+%  \LARGE\thesection} % número de sección
+% {0mm} % espacio mínimo entre etiqueta y cuerpo
+% {\filleft} % texto del cuerpo alineado a la derecha
+% [\vspace{0.5mm} \bigrule
+% \begin{flushright}
+%   \rm \scriptsize \copyright \theautor. Departamento de Matemáticas, Universidad de Cádiz. \\
+%   Se otorga permiso para copiar, distribuir y/o modificar este documento bajo
+%   los términos de la Licencia de Documentación Libre 
+%   GNU\footnote{Licencia GFDL
+%     versión 1.2 o posterior publicada por la
+%     Fundación de Software Libre,
+%     \url{http://es.gnu.org/Licencias/fdles.html}}
+% \end{flushright}
+% ] % después del cuerpo, dejar espacio vertical y trazar línea horizontal gruesa
+
+% Utilizar "Práctica" en vez de "Capítulo"
+%\addto\captionsspanish{\renewcommand\chaptername{Práctica}}
+
+\renewcommand{\cite}[1]{\footnote{\textbf Cita provisional: #1}}

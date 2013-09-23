@@ -1,0 +1,804 @@
+\documentclass[11pt,twoside]{book}
+\usepackage{sldoc}
+
+\def\RR{\mathbb{R}}
+\def\CC{\mathbb{C}}
+\def\QQ{\mathbb{Q}}
+\def\ZZ{\mathbb{Z}}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{obse}{Observación}[section]
+\begin{document}
+
+\setcounter{chapter}{6}
+%----------------------------------------------------------------------
+\chapter{Derivación de funciones implícitas}
+
+%---------------------------------------------------------------------
+\begin{contenidos}
+\item Teorema de la función implícita.
+\item Derivación implícita.
+\end{contenidos} 
+
+En esta práctica calculamos las derivadas parciales   de funciones de una y dos
+variables que vienen dadas de forma implícita. Lo hacemos de dos
+formas distintas, aplicando el teorema de la función implícita y también derivando
+directamente en la ecuación que relaciona la función y sus variables.
+
+\section{Derivación implícita con la regla de la cadena}
+
+Recordemos a continuación el teorema de la función implícita. (Toerema de la función implícita). Sea $F:D\subset\RR^{n+1}\rightarrow\RR$ una función 
+continua en un entorno de $(a_1,\dots ,a_n,b)\in D$. Si además  se
+verifica:
+\begin{itemize}
+\item $F(a_1,\dots ,a_n,b)=0$.
+\item $F$ es diferenciable en $(a_1,\dots ,a_n,b)$.
+\item $F_y$ existe y es no nula en un entorno de $(a_1,\dots ,a_n,b)$.
+\end{itemize}
+
+En estas condiciones la ecuación $F(x_1,\dots ,x_n,y)=0$ define
+implícitamente a $y$ como función diferenciable en un entorno del
+punto $(a_1,\dots ,a_n,b)$, $(x_1,\dots ,x_n)\rightarrow f(x_1,\dots ,x_n)=y$ y cuyas derivadas parciales de primer orden
+son:
+$$f_{x_i}(x_1,\dots ,x_n)=-\frac{F_x(x_1,\dots ,x_n,f(x_1,\dots
+  ,x_n))}{F_y(x_1,\dots ,x_n,f(x_1,\dots ,x_n))},\quad i=1,2,\dots ,n.$$
+
+
+
+Supongamos, en principio,  que $x$ e $y$ están relacionadas por la ecuación
+$F(x,y)=0$, y  que, además, $F(x,y)=0$, define
+a $y=y(x)$ como función diferenciable de $x$. Entonces, podemos
+considerar $F(x,y(x))=0$.  Para calcular
+ $y'$
+aplicamos la regla de la cadena a la ecuación.
+
+Declaramos las dependencias de cada una de las funciones con la orden 
+\expresion{depends}:
+
+\begin{maximasession}
+depends(F,[x,y],y,x)$
+\maximaoutput*
+\i1.  depends(F,[x,y],y,x)$ \\
+\end{maximasession}
+
+Una vez declaradas las dependencias, derivamos la ecuación $F(x,y(x))=0$,
+(regla de la cadena),
+ respecto de $x$ y a continuación despejamos la derivada $y'$:
+
+\begin{maximasession}
+diff(F,x);
+solve(%,'diff(y,x));
+remove(all,dependency)$
+kill(all)$
+
+\maximaoutput*
+\i2.  diff(F,x); \\
+\o2.  {{d}\over{d\,x}}\,y\,\left({{d}\over{d\,y}}\,F\right)+{{d}\over{d\,x}}\,F \\
+\i3.  solve(%,'diff(y,x)); \\
+\o3.  \left[ {{d}\over{d\,x}}\,y=-{{{{d}\over{d\,x}}\,F}\over{{{d}\over{d\,y}}\,F}} \right] \\
+\i4.  remove(all,dependency)$ \\
+\i5.  kill(all)$ \\
+\end{maximasession}
+
+Como ejemplo, consideramos la 
+ecuación $x^2+y^2+xy+x^3+y=0$. Definimos
+$F(x,y)=x^2+y^2+xy+x^3+y,$ entonces
+ $F$ es diferenciable en todo punto $(x,y)\in\RR^2$, y además
+  $F_y(x,y)=2y+x+1$ con  $F_y(x,y)\neq 0$ para $(x,y)\in\RR^2$
+  excepto en el conjunto de puntos
+  $C=\{(x,y)\in\RR^2/2y+x+1= 0\}.$
+
+Entonces la ecuación $F(x,y)=0$ define a $y=y(x)$ diferenciable
+en un intervalo que contiene a $x$ excepto en los puntos  del conjunto $C$.
+
+
+ Aplicamos, por tanto, la ecuación
+anterior para calcular la derivada
+$y'(x)$ que guardamos en la variable \expresion{dydx}:
+
+\begin{maximasession}
+F(x,y):=x^2+y^2+x*y+x^3+y$
+dydx:-diff(F(x,y),x)/diff(F(x,y),y);
+
+\maximaoutput*
+\i1.  F(x,y):=x^2+y^2+x*y+x^3+y$ \\
+\i2.  dydx:-diff(F(x,y),x)/diff(F(x,y),y); \\
+\o2.  {{-y-3\,x^2-2\,x}\over{2\,y+x+1}} \\
+\end{maximasession}
+
+Sea ahora  la ecuación  $F(x,y,z)=0$,  y supongamos que define a  $z$ como función
+implícita
+de $x$ e $y$. Consideramos $F(x,y,z(x,y))=0$ y calculamos  $z_x$ y $z_y$. 
+
+Creamos las dependencias de las funciones que entran en
+juego, $F$  depende de $x,\ y,\ z$  y $z$ a su vez  depende de $x,\
+y$. Usamos la orden \expresion{depends}:
+
+\begin{maximasession}
+depends(F,[x,y,z],z,[x,y])$
+
+
+\maximaoutput*
+\i1.  depends(F,[x,y,z],z,[x,y])$ \\
+\end{maximasession}
+
+Para calcular $z_x$ derivamos  $F$ con
+respecto a $x$ y despejamos $z_x$:
+\begin{maximasession}
+diff(F,x);
+solve(%,'diff(z,x));
+\maximaoutput*
+\i2.  diff(F,x); \\
+\o2.  {{d}\over{d\,x}}\,z\,\left({{d}\over{d\,z}}\,F\right)+{{d}\over{d\,x}}\,F \\
+\i3.  solve(%,'diff(z,x)); \\
+\o3.  \left[ {{d}\over{d\,x}}\,z=-{{{{d}\over{d\,x}}\,F}\over{{{d}\over{d\,z}}\,F}} \right] \\
+\end{maximasession}
+
+De la misma forma  $z_y$:
+\begin{maximasession}
+diff(F,y);
+solve(%,'diff(z,y));
+remove(all,dependency)$
+kill(all)$
+\maximaoutput*
+\i4.  diff(F,y); \\
+\o4.  {{d}\over{d\,y}}\,z\,\left({{d}\over{d\,z}}\,F\right)+{{d}\over{d\,y}}\,F \\
+\i5.  solve(%,'diff(z,y)); \\
+\o5.  \left[ {{d}\over{d\,y}}\,z=-{{{{d}\over{d\,y}}\,F}\over{{{d}\over{d\,z}}\,F}} \right] \\
+\i6.  remove(all,dependency)$ \\
+\i7.  kill(all)$ \\
+\end{maximasession}
+
+ Sea ahora  la ecuación $x^2+y² +z^2=25$. Consideramos
+$F(x,y,z)=0$, donde $F(x,y,z)=x^2+y^2+z^2-25$. La función $F$ es
+diferenciable en todo punto y $F_z(x,y,z)=2z$.  Entonces  $F$ define a $z$ como
+función implícita diferenciable de $x$ e $y$ para todos los puntos
+$(x,y)\in\RR^2$ excepto  los
+puntos de
+la circunferencia $x^2+y^2=25,\ z=0$.  
+
+Para calcular sus derivadas
+parciales utilizamos  las
+fórmulas que hemos calculado anteriormente. La derivada $z_x$ la
+guardamos en la variable $\expresion{dzdx}$ y la derivada $z_y$ en la
+variable \expresion{dzdy}:
+
+\begin{maximasession}
+
+F(x,y,z):=x^2+y^2+z^2-25$
+dzdx:-diff(F(x,y,z),x)/diff(F(x,y,z),z);
+dzdy:-diff(F(x,y,z),y)/diff(F(x,y,z),z);
+remove(all,dependency)$
+kill(all)$
+\maximaoutput*
+\i1.  F(x,y,z):=x^2+y^2+z^2-25$ \\
+\i2.  dzdx:-diff(F(x,y,z),x)/diff(F(x,y,z),z); \\
+\o2.  -{{x}\over{z}} \\
+\i3.  dzdy:-diff(F(x,y,z),y)/diff(F(x,y,z),z); \\
+\o3.  -{{y}\over{z}} \\
+\i4.  remove(all,dependency)$ \\
+\i5.  kill(all)$ \\
+\end{maximasession}
+
+\section{Derivando la ecuación}
+
+Una manera más práctica de calcular las derivadas parciales de
+funciones definidas de forma implícita  es
+derivando en la propia ecuación. Por ejemplo,
+para la  ecuación $2\sen x\, \cos y=1$. Calculamos
+$y'(x)$ por derivación implícita. 
+
+Para ello, declaramos la dependencia con la orden \expresion{depends}, definimos la
+ecuación y la llamamos \expresion{ec}, derivamos y
+despejamos la derivada. La salida es una lista de un solo elemento que
+guardamos en una variable que
+llamamos \expresion{der}:
+
+\begin{maximasession}
+depends(y,x)$
+ec:2*sin(x)*cos(y)=1;
+diff(ec,x);
+der:solve(%,'diff(y,x));
+\maximaoutput*
+\i17.  depends(y,x)$ \\
+\i18.  ec:2*sin(x)*cos(y)=1; \\
+\o18.  2\,\sin x\,\cos y=1 \\
+\i19.  diff(ec,x); \\
+\o19.  2\,\cos x\,\cos y-2\,\sin x\,\sin y\,\left({{d}\over{d\,x}}\,y\right)=0 \\
+\i20.  der:solve(%,'diff(y,x)); \\
+\o20.  \left[ {{d}\over{d\,x}}\,y={{\cos x\,\cos y}\over{\sin x\,\sin y}} \right] \\
+\end{maximasession}
+
+
+ Como hemos comprobado, al usar la orden \expresion{solve} la salida es
+una lista  que nosotros  hemos llamado \expresion{der}. En esta lista
+está el valor de la derivada $y'(x)$ el cual usaremos en
+cálculos posteriores.
+Este valor es, del primer (único) elemento de
+esa lista, la parte que está a la derecha del igual. Podemos usar
+para extraer esa parte la orden \expresion{second}(exp) y lo guardamos
+en una variable que llamamos \expresion{dydx}.
+
+\begin{maximasession}
+dydx:second(der[1]);
+\maximaoutput*
+\i21.  dydx:second(der[1]); \\
+\o21.  {{\cos x\,\cos y}\over{\sin x\,\sin y}} \\
+\end{maximasession}
+
+Para calcular  $y'(\pi /4)$.
+
+\begin{maximasession}
+dydx,x=%pi/4,y=%pi/4;
+remove(all,dependency)$
+kill(all)$
+\maximaoutput*
+\i23.  dydx,x=%pi/4,y=%pi/4; \\
+\o23.  1 \\
+\i24.  remove(all,dependency)$ \\
+\i25.  kill(all)$ \\
+\end{maximasession}
+
+
+
+En el siguiente ejemplo calculamos  las derivadas parciales  de $z(x,y)$, tal que $z$ está
+definida implícitamente por la ecuación
+$x^2+y^2+z^2=25.$  Definimos la dependencia de $z$ y
+la ecuación la llamamos $\expresion{ec}$:
+
+\begin{maximasession}
+
+depends(z,[x,y])$
+ec:x^2+y^2+z^2=25$
+
+\maximaoutput*
+\i1.  depends(z,[x,y])$ \\
+\i2.  ec:x^2+y^2+z^2=25$ \\
+\end{maximasession}
+
+Para calcular $z_x$ derivamos toda la ecuación con respecto a $x$ y
+despejamos. Guardamos la derivada $z_x$ en una variable \expresion{dzdx}, para
+ello usamos la orden \expresion{second} como anteriormente.
+\begin{maximasession}
+diff(ec,x);
+solve(%,'diff(z,x));
+dzdx:second(%[1]);
+\maximaoutput*
+\i3.  diff(ec,x); \\
+\o3.  2\,z\,\left({{d}\over{d\,x}}\,z\right)+2\,x=0 \\
+\i4.  solve(%,'diff(z,x)); \\
+\o4.  \left[ {{d}\over{d\,x}}\,z=-{{x}\over{z}} \right] \\
+\i5.  dzdx:second(%[1]); \\
+\o5.  -{{x}\over{z}} \\
+\end{maximasession}
+
+
+Algo similar hemos de hacer para calcular $z_y$. En este caso guardamos la
+derivada parcial en la variable \expresion{dzdy}:
+
+\begin{maximasession}
+diff(ec,y)$
+solve(%,'diff(z,y))$
+dzdy:second(%[1]);
+\maximaoutput*
+\i6.  diff(ec,y)$ \\
+\i7.  solve(%,'diff(z,y))$ \\
+\i8.  dzdy:second(%[1]); \\
+\o8.  -{{y}\over{z}} \\
+\end{maximasession}
+
+Veamos cómo podemos calcular   $z_{xx}$. Para ello derivamos la
+ecuación dos veces con respecto a $x$.
+
+\begin{maximasession}
+diff(ec,x,2);
+\maximaoutput*
+\i12.  diff(ec,x,2); \\
+\o12.  2\,z\,\left({{d^2}\over{d\,x^2}}\,z\right)+2\,\left({{d}\over{d\,x}}\,z\right)^2+2=0 \\
+\end{maximasession}
+
+Observamos que en la ecuación derivada tenemos tanto $z_{xx}$ como $z_x$. 
+ Antes de despejar, tendremos
+que sustituir la derivada $z_x$ que hemos calculado antes y que hemos
+guardado en \expresion{dzdx}. Para hacer esto, usamos la orden
+\expresion{subst}{\it{(exp1,exp2,exp)}}, que sustituye en la expresión {\it{exp}},
+{\it{exp2}} por {\it{ exp1.}}
+Por último, despejamos $z_{xx}$:
+
+\begin{maximasession}
+diff(ec,x,2);
+subst(dzdx,'diff(z,x),%);
+solve(%,'diff(z,x,2));
+
+\maximaoutput*
+\i13.  diff(ec,x,2); \\
+\o13.  2\,z\,\left({{d^2}\over{d\,x^2}}\,z\right)+2\,\left({{d}\over{d\,x}}\,z\right)^2+2=0 \\
+\i14.  subst(dzdx,'diff(z,x),%); \\
+\o14.  2\,z\,\left({{d^2}\over{d\,x^2}}\,z\right)+{{2\,x^2}\over{z^2}}+2=0 \\
+\i15.  solve(%,'diff(z,x,2)); \\
+\o15.  \left[ {{d^2}\over{d\,x^2}}\,z=-{{z^2+x^2}\over{z^3}} \right] \\
+\end{maximasession}
+
+
+Para calcular $z_{yy}$:
+
+\begin{maximasession}
+diff(ec,y,2);
+subst(dzdy,'diff(z,y),%);
+solve(%,'diff(z,y,2));
+\maximaoutput*
+\i13.  diff(ec,y,2); \\
+\o13.  2\,z\,\left({{d^2}\over{d\,y^2}}\,z\right)+2\,\left({{d}\over{d\,y}}\,z\right)^2+2=0 \\
+\i14.  subst(dzdy,'diff(z,y),%); \\
+\o14.  2\,z\,\left({{d^2}\over{d\,y^2}}\,z\right)+{{2\,y^2}\over{z^2}}+2=0 \\
+\i15.  solve(%,'diff(z,y,2)); \\
+\o15.  \left[ {{d^2}\over{d\,y^2}}\,z=-{{z^2+y^2}\over{z^3}} \right] \\
+\end{maximasession}
+
+Calculamos $z_{xy}$ derivando la ecuación  primero con respecto a $y$
+y luego con respecto a $x$:
+ 
+\begin{maximasession}
+diff(ec,x,1,y,1);
+subst(dzdy,'diff(z,y),%);
+subst(dzdx,'diff(z,x),%);
+solve(%,'diff(z,x,1,y,1));
+\maximaoutput*
+\i20.  diff(ec,x,1,y,1); \\
+\o20.  2\,\left({{d}\over{d\,x}}\,z\right)\,\left({{d}\over{d\,y}}\,z\right)+2\,z\,\left({{d^2}\over{d\,x\,d\,y}}\,z\right)=0 \\
+\i21.  subst(dzdy,'diff(z,y),%); \\
+\o21.  2\,z\,\left({{d^2}\over{d\,x\,d\,y}}\,z\right)-{{2\,y\,\left({{d}\over{d\,x}}\,z\right)}\over{z}}=0 \\
+\i22.  subst(dzdx,'diff(z,x),%); \\
+\o22.  2\,z\,\left({{d^2}\over{d\,x\,d\,y}}\,z\right)+{{2\,x\,y}\over{z^2}}=0 \\
+\i23.  solve(%,'diff(z,x,1,y,1)); \\
+\o23.  \left[ {{d^2}\over{d\,x\,d\,y}}\,z=-{{x\,y}\over{z^3}} \right] \\
+\end{maximasession}
+
+
+\begin{ejercicios}
+
+\item Calcula las derivadas $y',\ y'',\ y'''$ donde  $x^2+xy+y^2=3$.
+\item Calcula las derivadas parciales de primer y segundo orden de la
+  función $z=z(x,y)$ definida implícitamente por la
+  ecuación $z^3-3xyz=a³$, donde $a$ es una constante no negativa.
+\item Calcula $x'$ e $y'$ si $$x+y+t=0,\ x²+y²+t²=1.$$
+\item En ocasiones la presión $P$, la temperatura $T$ y el volumen
+  $V$ de un gas son elementos que se relacionan entre sí. Supongamos que la relación viene
+  dada por la ecuación $F(P,T,V)=0$, donde $F$ es una función de tres
+  variables, con condiciones de diferenciabilidad suficientes.
+
+Demuestra la regla cíclica:
+$$\frac{\partial P}{\partial T}\frac{\partial
+  T}{\partial V}\frac{\partial V}{\partial P}=-1.$$
+de la siguiente manera:
+\begin{enumerate}
+\item Para calcular $\displaystyle{\frac{\partial P}{\partial T}}$,
+  considera que $P$ es función implícita de las otras dos variables
+  $T$ y $V$, $P=P(T,V)$ y por tanto $F(P(T,V),T,V)=0$ y deriva toda la
+  ecuación respecto de $T$. Guarda la derivada en una variable que se
+  llame \expresion{dPdT}.
+\item Para calcular $\displaystyle{\frac{\partial
+  T}{\partial V}}$, considera $T(P,V)$, es decir,
+$F(P,T(P,V),V)=0$ y deriva respecto de $V$. Guarda la derivada en una variable que se llame
+\expresion{dTdV}.
+\item Para calcular $\displaystyle{\frac{\partial V}{\partial P}}$,
+  considera $V(P,T)$, es decir, $F(P,T,V(P,T))=0$ y deriva respecto de
+  $P$. Guarda la derivada
+  en una variable que se llame \expresion{dVdP}.
+\item Por último, comprueba que se cumple la regla multiplicando las
+  derivadas que has guardado.
+\end{enumerate}
+
+
+
+
+
+\end{ejercicios}
+
+
+\begin{bibliografia}
+ \item \autor{Juan de Burgos}.\titulo{Cálculo infinitesimal de varias variables}.\editorial{Mc Graw Hill}. 1999.
+\item \autor{Gerald L. Bradley, Karl Smidth}. \titulo{Cálculo de varias variables}.\editorial{Prentice Hall}. 1998.
+
+
+\end{bibliografia}
+
+
+\end{document}
+
+\section{Una aplicación a la Termodinámica}
+
+En Termodinámica la presión ($P$), la temperatura ($T$) y el volumen ($V$) de un
+gas son elementos que se relacionan   entre sí.
+
+ Sea
+$F(P,T,V)=0$ la ecuación que relaciona dichas variables. Demostramos
+la regla cíclica: $$\frac{\partial P}{\partial T}\frac{\partial
+  T}{\partial V}\frac{\partial V}{\partial P}=-1.$$
+
+En primer lugar, consideramos $P=P(T,V)$ y por lo tanto
+$F(P(T,V),T,V)=0$. Queremos calcular
+$$\frac{\partial P}{\partial T}$$ para ello derivamos la ecuación
+respecto a $T$  y despejamos:
+\begin{maximasession}
+remove(all,dependency)$
+depends(F,[P,T,V],P,[T,V])$
+ec:diff(F,T);
+solve(ec,'diff(P,T));
+dPdT:second(%[1]);
+
+\maximaoutput*
+\i22.  remove(all,dependency)$ \\
+\i23.  depends(F,[P,T,V],P,[T,V])$ \\
+\i24.  ec:diff(F,T); \\
+\o24.  {{d}\over{d\,P}}\,F\,\left({{d}\over{d\,T}}\,P\right)+{{d}\over{d\,T}}\,F \\
+\i25.  solve(ec,'diff(P,T)); \\
+\o25.  \left[ {{d}\over{d\,T}}\,P=-{{{{d}\over{d\,T}}\,F}\over{{{d}\over{d\,P}}\,F}} \right] \\
+\i26.  dPdT:second(%[1]); \\
+\o26.  -{{{{d}\over{d\,T}}\,F}\over{{{d}\over{d\,P}}\,F}} \\
+\end{maximasession}
+Para calcular $\displaystyle{\frac{\partial T}{\partial V}}$ debemos
+tomar otras dependencias:
+\begin{maximasession}
+remove(all,dependency)$
+depends(F,[P,T,V],T,[P,V])$
+ec2:diff(F,V);
+solve(ec2,'diff(T,V));
+dTdV:second(%[1]);
+\maximaoutput*
+\i27.  remove(all,dependency)$ \\
+\i28.  depends(F,[P,T,V],T,[P,V])$ \\
+\i29.  ec2:diff(F,V); \\
+\o29.  {{d}\over{d\,T}}\,F\,\left({{d}\over{d\,V}}\,T\right)+{{d}\over{d\,V}}\,F \\
+\i30.  solve(ec2,'diff(T,V)); \\
+\o30.  \left[ {{d}\over{d\,V}}\,T=-{{{{d}\over{d\,V}}\,F}\over{{{d}\over{d\,T}}\,F}} \right] \\
+\i31.  dTdV:second(%[1]); \\
+\o31.  -{{{{d}\over{d\,V}}\,F}\over{{{d}\over{d\,T}}\,F}} \\
+\end{maximasession}
+
+El último factor, $\displaystyle{\frac{\partial V}{\partial P}}$
+derivamos la ecuación con respecto a $P$:
+
+\begin{maximasession}
+remove(all,dependency)$
+depends(F,[P,T,V],V,[P,T])$
+ec3:diff(F,P)$
+solve(ec3,'diff(V,P))$
+dVdP:second(%[1]);
+\maximaoutput*
+\i37.  remove(all,dependency)$ \\
+\i38.  depends(F,[P,T,V],V,[P,T])$ \\
+\i39.  ec3:diff(F,P)$ \\
+\i40.  solve(ec3,'diff(V,P))$ \\
+\i41.  dVdP:second(%[1]); \\
+\o41.  -{{{{d}\over{d\,P}}\,F}\over{{{d}\over{d\,V}}\,F}} \\
+\end{maximasession}
+
+Por último, comprobamos que se verifica la regla:
+
+\begin{maximasession}
+dPdT*dTdV*dVdP;
+\maximaoutput*
+\i25.  dPdT*dTdV*dVdP; \\
+\o25.  -1 \\
+\end{maximasession}
+
+\begin{ejercicios}
+\item Calcula $y',\ y'',\ y'''$ para la curva $x^2+xy+y^2=3$.
+\item Calcula las derivadas parciales de primer y segundo orden de la
+  función $z=z(x,y)$ definida implícitamente por la
+  ecuación $z^3-3xyz=a³$.
+\item Calcula $\displaystyle{\frac{dx}{dz}}$ y
+  $\displaystyle{\frac{dy}{dz}}$ si $$x+y+z=0,\ x²+y²+z²=1.$$
+\item Demuestra que si existe la relación $F(E,T,V)=0$, se verifica 
+ $${\left (\frac{\partial E}{\partial V}\right )}_P={\left (\frac{\partial
+    E}{\partial T}\right )}_P{\left (\frac{\partial T}{\partial
+    V}\right )}_P.$$
+\item Sea $f(x,y)$, donde $x=r\, \cos t$, $y=r\, \sen t$. Comprueba
+  que se verifica 
+ $$\frac{1}{r}\frac{\partial }{\partial r}\left (\frac{\partial
+     f}{\partial r}\right )+\frac{1}{r^2}\frac{\partial^2 f}{\partial
+       t^2}=\frac{\partial^2 f}{\partial x^2}+\frac{\partial^2
+       f}{\partial y^2}.$$
+\item Sea $f(r)$, $r={(x^2+y^2+z^2)}^{1/2}$. Demuestra que 
+$$\frac{\partial^2 f}{\partial x^2}+\frac{\partial^2 f}{\partial
+  y^2}+\frac{\partial^2 f}{\partial z^2}=\frac{d²
+  f}{dr^2}+\frac{2}{r}\frac{df}{dr}.$$
+\item Sea la ecuación en derivadas
+  parciales $$a\frac{\partial^2z}{\partial x^2}+b\frac{\partial^2
+    z}{\partial x\partial y}+c\frac{\partial^2z}{\partial y^2}=0,$$
+donde $a$, $b$ y $c$ son constantes arbitrarias. Demuestra que para
+que $z=f(y+mx)$ sea solución de la ecuación, debe ser $am^2+bm+c=0$.
+\end{ejercicios}
+
+\end{document}
+
+
+\documentclass{book}
+
+\usepackage{sldoc}
+
+\begin{document}
+
+
+%----------------------------------------------------------------------
+\chapter{ Derivadas de funciones compuestas }
+
+%---------------------------------------------------------------------
+\begin{contenidos}
+\item Regla de la cadena.
+\end{contenidos} 
+
+
+\section{Regla de la cadena}
+
+Si tratamos funciones de forma explícita, la derivada de la función
+compuesta la calculamos componiéndolas. Veamos
+algunos ejemplos.
+
+Si $f(x)=\sen x$ y  $x(t)=t^2$, la derivada de la
+función $f(t)=f(x(t))$ será:
+\begin{maximasession}
+f(x):=sin(x);
+diff(f(t^2),t);
+\maximaoutput*
+\i1.  f(x):=sin(x); \\
+\o1.  f\left(x\right)\mathbin{:=}\sin x \\
+\i2.  diff(f(t^2),t); \\
+\o2.  2\,t\,\cos t^2 \\
+\end{maximasession}
+
+Otro ejemplo, sea $f(x,y)=xy+x^2+y^2$, donde $x(t)=r\cos (t),\
+y(t)=r\sen (t)$, calculamos  $\displaystyle{\frac{\partial f}{\partial
+  r}}\quad \displaystyle{ \frac{\partial f}{\partial t}}:$
+
+\begin{maximasession}
+kill(f);
+f(x,y):=x*y+x^2+y^2;
+diff(f(r*cos(t),r*sin(t)),r);
+diff(f(r*cos(t),r*sin(t)),t);
+\maximaoutput*
+\i1.  kill(f); \\
+\o1.  \mathbf{done} \\
+\i2.  f(x,y):=x*y+x^2+y^2; \\
+\o2.  f\left(x , y\right)\mathbin{:=}x\,y+x^2+y^2 \\
+\i3.  diff(f(r*cos(t),r*sin(t)),r); \\
+\o3.  2\,r\,\left(\sin t\right)^2+2\,r\,\cos t\,\sin t+2\,r\,\left(\cos t\right)^2 \\
+\i4.  diff(f(r*cos(t),r*sin(t)),t); \\
+\o4.  r^2\,\left(\cos t\right)^2-r^2\,\left(\sin t\right)^2 \\
+\end{maximasession}
+
+Para calcular $$\displaystyle{\frac{\partial f}{\partial t}(\pi ,0 )}:$$
+
+\begin{maximasession}
+
+diff(f(r*cos(t),r*sin(t)),t);
+%,r=%pi,t=0;
+
+\maximaoutput*
+\i6.  diff(f(r*cos(t),r*sin(t)),t); \\
+\o6.  r^2\,\left(\cos t\right)^2-r^2\,\left(\sin t\right)^2 \\
+\i7.  %,r=%pi,t=0; \\
+\o7.  \pi^2 \\
+\end{maximasession}
+
+
+
+ \Maxima podemos declarar variables dependientes de otras con
+  \expresion{depends} con el fin de calcular derivadas.
+
+ Por ejemplo,
+para la función $f(x,y)$, donde $x,y$ son funciones que dependen de
+$t$, queremos calcular $\displaystyle{\frac{df}{dt}}:$
+
+\begin{maximasession}
+depends(f,[x,y],[x,y],t);
+diff(f,t);
+remove(all,dependency);
+\maximaoutput*
+\i4.  depends(f,[x,y],[x,y],t); \\
+\o4.  \left[ f\left(x , y\right) , x\left(t\right) , y\left(t\right) \right] \\
+\i5.  diff(f,t); \\
+\o5.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,t}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,t}}\,x\right) \\
+\i6.  remove(all,dependency); \\
+\o6.  \mathbf{done} \\
+\end{maximasession}
+Nos da la regla de la cadena: $$\frac{df}{dt}=\frac{\partial
+  f}{\partial x}\frac{dx}{dt}+\frac{\partial f}{\partial
+  y}\frac{dy}{dt}.$$
+
+Se cancelan las dependencias de las variables con
+expresion{remove(all,dependency)}.
+
+Otro ejemplo. Si $f(x,y)$, $x(s,t)$, $y(s,t)$. Para calcular las
+parciales:
+$\displaystyle{\frac{\partial f}{\partial s},\quad \frac{\partial f}{\partial t}}$
+usamos la regla de la cadena:
+
+\begin{maximasession}
+depends(f,[x,y],[x,y],[s,t]);
+diff(f,s);
+diff(f,t);
+remove(all,dependency);
+
+\maximaoutput*
+\i8.  depends(f,[x,y],[x,y],[s,t]); \\
+\o8.  \left[ f\left(x , y\right) , x\left(s , t\right) , y\left(s , t\right) \right] \\
+\i9.  diff(f,s); \\
+\o9.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,s}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,s}}\,x\right) \\
+\i10.  diff(f,t); \\
+\o10.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,t}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,t}}\,x\right) \\
+\i11.  remove(all,dependency); \\
+\o11.  \mathbf{done} \\
+\end{maximasession}
+
+El resultado lo entendemos como la regla de la cadena:
+
+$$\frac{\partial f}{\partial s}=\frac{\partial f}{\partial x}\frac{\partial
+  x}{\partial s}+\frac{\partial f}{\partial y}\frac{\partial
+  y}{\partial s}.$$
+
+$$\frac{\partial f}{\partial t}=\frac{\partial f}{\partial x}\frac{\partial
+  x}{\partial t}+\frac{\partial f}{\partial y}\frac{\partial
+  y}{\partial t}.$$
+
+De la misma forma se puede calcular las derivadas superiores o incluso
+si están
+formando parte de una expresión:
+
+\begin{maximasession}
+depends(f,x,x,t);
+diff(f,t,2);
+diff(t*f,t);
+\maximaoutput*
+\i12.  depends(f,x,x,t); \\
+\o12.  \left[ f\left(x\right) , x\left(t\right) \right] \\
+\i13.  diff(f,t,2); \\
+\o13.  {{d}\over{d\,x}}\,f\,\left({{d^2}\over{d\,t^2}}\,x\right)+{{d^2}\over{d\,x^2}}\,f\,\left({{d}\over{d\,t}}\,x\right)^2 \\
+\i14.  diff(t*f,t); \\
+\o14.  {{d}\over{d\,x}}\,f\,t\,\left({{d}\over{d\,t}}\,x\right)+f \\
+\end{maximasession}
+
+
+
+
+
+
+
+En el  ejemplo, $$ f(x,y),\ x(t)=e^ t,\ y(t)=e^{-t},$$ para calcular $\displaystyle{\frac{df}{dt}}$
+cargamos  el paquete de derivadas
+posicionales \expresion{ pdiff}, que nos permite calcular derivadas
+parciales
+ de funciones compuestas en la que alguna de ellas no está definida de
+ forma explícita.
+
+\begin{maximasession}
+load("pdiff");
+diff(f(x,y),x,2);
+diff(f(x,y),x,2),use_pdiff:false;
+\maximaoutput*
+\i3.  load("pdiff"); \\
+\o3.  \mbox{{}/usr/share/maxima/5.13.0/share/contrib/pdiff/pdiff.lisp{}} \\
+\i4.  diff(f(x,y),x,2); \\
+\o4.  f_{\left(2 , 0\right)}(x,y) \\
+\i5.  diff(f(x,y),x,2),use_pdiff:false; \\
+\o5.  {{d^2}\over{d\,x^2}}\,f\left(x , y\right) \\
+\end{maximasession}
+
+Aplica la regla de la cadena:
+
+\begin{maximasession}
+diff(f(%e^t,%e^(-t)),t);
+\maximaoutput*
+\i6.  diff(f(%e^t,%e^(-t)),t); \\
+\o6.  e^{t}\,f_{\left(1 , 0\right)}(e^{t},e^ {- t })-e^ {- t }\,f_{\left(0 , 1\right)}(e^{t},e^ {- t }) \\
+\end{maximasession}
+
+Podemos comprobar que $y=f(x-ct)+g(x+ct)$ es solución de la ecuación
+del calor $$\frac{\partial^2 y}{\partial t^2}=c^2\frac{\partial^2
+  y}{\partial x^2}:$$
+\begin{maximasession}
+y:f(x-c*t)+g(x+c*t);
+is(ratsimp(diff(y,t,2)=c^2*diff(y,x,2)));
+\maximaoutput*
+\i7.  y:f(x-c*t)+g(x+c*t); \\
+\o7.  g\left(x+c\,t\right)+f\left(x-c\,t\right) \\
+\i8.  is(ratsimp(diff(y,t,2)=c^2*diff(y,x,2))); \\
+\o8.  \mathbf{true} \\
+\end{maximasession}
+
+
+
+\begin{ejercicios}
+\item Sea $f(x,y)$, donde $x=r\, \cos t$, $y=r\, \sen t$. Comprueba
+  que se verifica 
+ $$\frac{1}{r}\frac{\partial }{\partial r}\left (\frac{\partial
+     f}{\partial r}\right )+\frac{1}{r^2}\frac{\partial^2 f}{\partial
+       t^2}=\frac{\partial^2 f}{\partial x^2}+\frac{\partial^2
+       f}{\partial y^2}.$$
+\item Sea $f(r)$, $r={(x^2+y^2+z^2)}^{1/2}$. Demuestra que 
+$$\frac{\partial^2 f}{\partial x^2}+\frac{\partial^2 f}{\partial
+  y^2}+\frac{\partial^2 f}{\partial z^2}=\frac{d²
+  f}{dr^2}+\frac{2}{r}\frac{df}{dr}.$$
+\item Sea la ecuación en derivadas
+  parciales $$a\frac{\partial^2z}{\partial x^2}+b\frac{\partial^2
+    z}{\partial x\partial y}+c\frac{\partial^2z}{\partial y^2}=0,$$
+donde $a$, $b$ y $c$ son constantes arbitrarias. Demuestra que para
+que $z=f(y+mx)$ sea solución de la ecuación, debe ser $am^2+bm+c=0$.
+\end{ejercicios}
+
+
+
+\end{document}
+\section{Una aplicación a la Termodinámica}
+
+En Termodinámica la presión ($P$), la temperatura ($T$) y el volumen ($V$) de un
+gas son elementos que se relacionan   entre sí.
+
+ Sea
+$F(P,T,V)=0$ la ecuación que relaciona dichas variables. Demostramos
+la regla cíclica: $$\frac{\partial P}{\partial V}\frac{\partial
+  V}{\partial T}\frac{\partial T}{\partial P}=-1.$$
+
+En primer lugar, consideramos $P=P(T,V)$ y por lo tanto
+
+
+El último factor, $\displaystyle{\frac{\partial V}{\partial P}}$
+derivamos la ecuación con respecto a $P$:
+
+\begin{maximasession}
+remove(all,dependency);
+depends(F,[P,T,V],V,[P,T]);
+ec3:diff(F,P);
+solve(ec3,'diff(V,P));
+dVdP:second(%[1]);
+\maximaoutput*
+\i15.  remove(all,dependency); \\
+\o15.  \mathbf{done} \\
+\i16.  depends(F,[P,T,V],V,[P,T]); \\
+\o16.  \left[ F\left(P , T , V\right) , V\left(P , T\right) \right] \\
+\i17.  ec3:diff(F,P); \\
+\o17.  {{d}\over{d\,V}}\,F\,\left({{d}\over{d\,P}}\,V\right)+{{d}\over{d\,P}}\,F \\
+\i18.  solve(ec3,'diff(V,P)); \\
+
+\i19.  dVdP:second(%[1]); \\
+\o19.  -{{{{d}\over{d\,P}}\,F}\over{{{d}\over{d\,V}}\,F}} \\
+\end{maximasession}
+
+Por último, comprobamos que se verifica la regla:
+
+\begin{maximasession}
+dPdT*dTdV*dVdP;
+\maximaoutput*
+\i20.  dPdT*dTdV*dVdP; \\
+\o20.  -1 \\
+\end{maximasession}
+\section{Derivadas de funciones implicitas}
+
+Calculamos derivadas de funciones definidas implícitamente. Por
+ejemplo, las primeras derivadas parciales de $z(x,y)$:
+$$x²+y²+z²=25,$$
+
+\begin{maximasession}
+remove(all,dependency);
+depends(z,[x,y]);
+diff(x^2+y^2+z^2=25,x);
+solve(%,'diff(z,x));
+diff(x^2+y^2+z^2=25,y);
+solve(%,'diff(z,y));
+\maximaoutput*
+\i21.  remove(all,dependency); \\
+\o21.  \mathbf{done} \\
+\i22.  depends(z,[x,y]); \\
+\o22.  \left[ z\left(x , y\right) \right] \\
+\i23.  diff(x^2+y^2+z^2=25,x); \\
+
+\i24.  solve(%,'diff(z,x)); \\
+
+\i25.  diff(x^2+y^2+z^2=25,y); \\
+
+\i26.  solve(%,'diff(z,y)); \\
+
+\end{maximasession}
+
+\end{document}

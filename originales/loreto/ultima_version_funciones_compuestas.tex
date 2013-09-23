@@ -1,0 +1,402 @@
+
+
+\documentclass[11pt]{book}
+
+
+\usepackage{sldoc}
+
+\usepackage{sldoc}
+\def\RR{\mathbb{R}}
+\def\CC{\mathbb{C}}
+\def\QQ{\mathbb{Q}}
+\def\ZZ{\mathbb{Z}}
+\newtheorem{defi}{Definición}[section]
+\newtheorem{teor}{Teorema}[section]
+\newtheorem{obse}{Observación}[section]
+\begin{document}
+
+%----------------------------------------------------------------------
+\chapter{Derivación  de funciones compuestas de varias variables}
+%----------------------------------------------------------------------
+
+\begin{contenidos}
+\item Diferenciación de funciones compuestas. Regla de la cadena
+\item Las funciones componentes vienen definidas de forma explícita
+\item Algunas de las funciones componentes no están definidas explícitamente
+\end{contenidos}
+
+
+En esta práctica utilizamos órdenes  de \expresion{Maxima} para el
+cálculo de derivadas parciales de funciones compuestas de varias variables.
+En primer lugar comprobaremos que, para el cálculo de derivadas
+parciales de funciones compuestas de varias variables,
+la orden \expresion{diff} aplica la regla de la cadena. 
+A continuación calculamos derivadas parciales de funciones compuestas de varias variables cuyas funciones
+componentes vienen definidas de forma explícita. 
+Por último, usamos el
+paquete de derivadas posicionales \expresion{pdiff} para calcular
+derivadas parciales de
+ funciones compuestas de varias variables, en el caso de que alguna de las funciones componentes
+no se conoce explícitamente.
+
+
+\section{La  regla de la cadena con la función diff}
+
+Recordemos la definición de matriz jacobiana de una función 
+$f:D\subset \RR^n\rightarrow \RR^m$, siendo $D$ un conjunto abierto. Si $f$ es diferenciable en el punto $a\in D$, se define la matriz jacobiana de $f$ en el punto  $a$, y se representa por $J(f)(a)$, a la matriz
+$$J(f)(a)=\left (\begin{array}{cccc}
+{(f_1)}_{x_1}(a)&{(f_1)}_{x_2}(a)&\dots &{(f_1)}_{x_n}(a)\\
+{(f_2)}_{x_1}(a)&{(f_2)}_{x_2}(a)&\dots &{(f_2)}_{x_n}(a)\\
+\vdots &\vdots &\dots &\vdots\\
+{(f_m)}_{x_1}(a)&{(f_m)}_{x_2}(a)&\dots &{(f_m)}_{x_n}(a)\end{array}\right )$$
+\end{array}\right )$$
+
+Recordemos ahora el siguiente resultado: la regla de la cadena.  Sean las funciones $f:D\subset \RR^n\rightarrow\RR^m$ y $g:B:\RR^m\rightarrow\RR^p$, donde $D$ y $B$ son conjuntos abiertos, con $Im f\subset B$.
+Sea $h=g\circ f:D\subset\RR^n\rightarrow\RR^p$ la función compuesta de $f$ con $g$. Si $f$ es diferenciable en $a\in D$ y $g$ es diferenciable en $f(a)$, entonces la función $h=g\circ f$ es diferenciable en $a$ y se verifica 
+$$J(g\circ f)(a)=Jg(f(a))Jf(a).$$
+
+En el caso particular en que $p=1$, la función compuesta resultante es
+una función de $n$ variables.
+$$f:\RR^n\rightarrow\RR^m,\ g:\RR^m\rightarrow\RR,$$  
+$$f(x_1\dots ,x_n)=(y_1\dots ,y_m),\ g(y_1,\dots ,y_m)=z.$$
+Entonces $$z=h(x_1,\dots ,x_n)=(g\circ f)(x_1,\dots ,x_n)=g(f(x_1,\dots ,x_n)).$$
+La matriz jacobiana $J(g\circ f)(x)$ es:
+$$\left ({z}_{x_1},{z}_{x_2},\dots ,{z}_{x_n}\right )=
+\left ({z}_{y_1},{z}_{y_2},\dots ,{z}_{y_n}\right )
+\left (\begin{array}{cccc}
+{(y_1)}__{x_1}&{(y_1)}_{x_2}&\dots &{(y_1)}_{x_n}\\
+{(y_2)}__{x_1}&{(y_2)}_{x_2}&\dots &{(y_2)}_{x_n}\\
+\vdots &\vdots &\dots &\vdots \\
+{(y_m)}__{x_1}&{(y_m)}_{x_2}&\dots &{(y_m)}_{x_n}\end{array}\right ).
+$$
+
+
+La orden \expresion{depends} se utiliza para  declarar dependencias de
+variables, es decir, definimos las variables que dependen de otras. 
+La orden  \expresion{diff} aplica la regla de la cadena a esas
+funciones compuestas.
+
+Consideramos, por ejemplo,  la  función de dos variables $x$ e $y$,
+$f(x,y)$, donde $x$ e $y$ son funciones de una  variable independiente $t$: $x=x(t)$ e $y=y(t)$. La función compuesta es una función de una variable. Para calcular la derivada
+$f'}$, declaramos las dependencias con la
+orden \expresion{depends} y derivamos con \expresion{diff}: 
+
+\begin{maximasession}
+depends(f,[x,y],[x,y],t);
+diff(f,t);
+remove(all,dependency);
+\maximaoutput*
+\i1.  depends(f,[x,y],[x,y],t); \\
+\o1.  \left[ f\left(x , y\right) , x\left(t\right) , y\left(t\right) \right] \\
+\i2.  diff(f,t); \\
+\o2.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,t}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,t}}\,x\right) \\
+\i3.  remove(all,dependency); \\
+\o3.  \mathbf{done} \\
+\end{maximasession}
+
+
+Observemos que, en el ejemplo anterior, para cancelar las dependencias de las variables, hemos usado el comando 
+\expresion{remove(all,dependency)}.
+
+
+Consideremos ahora  el caso de una función   de dos variables
+$x$, $y$,
+$f(x,y)$,
+ que a su vez  dependen de otras dos variables
+independientes $s$ y $t$, $x(s,t)$,
+$y(s,t)$. Las derivadas parciales $f_s$ y $f_t$ son:
+
+\begin{maximasession}
+depends(f,[x,y],[x,y],[s,t]);
+diff(f,s);
+diff(f,t);
+remove(all,dependency);
+
+\maximaoutput*
+\i4.  depends(f,[x,y],[x,y],[s,t]); \\
+\o4.  \left[ f\left(x , y\right) , x\left(s , t\right) , y\left(s , t\right) \right] \\
+\i5.  diff(f,s); \\
+\o5.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,s}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,s}}\,x\right) \\
+\i6.  diff(f,t); \\
+\o6.  {{d}\over{d\,y}}\,f\,\left({{d}\over{d\,t}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,t}}\,x\right) \\
+\i7.  remove(all,dependency); \\
+\o7.  \mathbf{done} \\
+\end{maximasession}
+
+
+
+
+Como último ejemplo,  consideramos  el caso  de una función de tres variables
+$f(x,y,z)$, tal que $x=x(s,t)$, $y=y(s,t)$ y $z=z(s,t)$, entonces las derivadas parciales $f_s,\ f_t $
+son:
+\begin{maximasession}
+depends(f,[x,y,z],[x,y,z],[s,t]);
+diff(f,s);
+diff(f,t);
+remove(all,dependency)$
+\maximaoutput*
+\i8.  depends(f,[x,y,z],[x,y,z],[s,t]); \\
+\o8.  \left[ f\left(x , y , z\right) , x\left(s , t\right) , y\left(s , t\right) , z\left(s , t\right) \right] \\
+\i9.  diff(f,s); \\
+\o9.  {{d}\over{d\,z}}\,f\,\left({{d}\over{d\,s}}\,z\right)+{{d}\over{d\,y}}\,f\,\left({{d}\over{d\,s}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,s}}\,x\right) \\
+\i10.  diff(f,t); \\
+\o10.  {{d}\over{d\,z}}\,f\,\left({{d}\over{d\,t}}\,z\right)+{{d}\over{d\,y}}\,f\,\left({{d}\over{d\,t}}\,y\right)+{{d}\over{d\,x}}\,f\,\left({{d}\over{d\,t}}\,x\right) \\
+\i11.  remove(all,dependency)$ \\
+\end{maximasession}
+
+Podemos calcular también  derivadas parciales  de mayor orden. Calculamos como  ejemplo, $f_{tt}$ para  $f(x)$ tal que $x=x(t)$:
+
+\begin{maximasession}
+depends(f,x,x,t)$
+diff(f,t,2);
+remove(f,dependency)$
+\maximaoutput*
+\i12.  depends(f,x,x,t)$ \\
+\i13.  diff(f,t,2); \\
+\o13.  {{d}\over{d\,x}}\,f\,\left({{d^2}\over{d\,t^2}}\,x\right)+{{d^2}\over{d\,x^2}}\,f\,\left({{d}\over{d\,t}}\,x\right)^2 \\
+\i14.  remove(f,dependency)$ \\
+\end{maximasession}
+
+Incluso podemos obtener la expresión de la derivada de un producto de funciones  en la que alguna sea compuesta. por ejemplo, sea $f(x)$  tal que
+$x=x(t)$. La derivada del producto $tf(x(t))$,  ${\left (t\, f(x(t))\right )'}$ es:
+
+\begin{maximasession}
+depends(f,x,x,t)$
+diff(t*f,t);
+remove(f,dependency)$
+\maximaoutput*
+\i15.  depends(f,x,x,t)$ \\
+\i16.  diff(t*f,t); \\
+\o16.  {{d}\over{d\,x}}\,f\,t\,\left({{d}\over{d\,t}}\,x\right)+f \\
+\i17.  remove(f,dependency)$ \\
+\end{maximasession}
+
+
+\section{Las funciones componentes vienen definidas de forma explícita}
+
+
+
+A continuación usamos  la orden  \expresion{diff} para calcular las
+derivadas parciales de  funciones compuestas
+cuyas funciones componentes están definidas explícitamente. Sea, por ejemplo, 
+$f(x,y)=x\, y+y²$, tal que $x(t)=\sen t$,
+$y(t)=e^t$.
+Para calcular $f_t$:
+
+\begin{maximasession}
+f(x,y):=x*y+y^2$
+diff(f(sin(t),%e^t),t);
+kill(f)$
+\maximaoutput*
+\i18.  f(x,y):=x*y+y^2$ \\
+\i19.  diff(f(sin(t),%e^t),t); \\
+\o19.  e^{t}\,\sin t+e^{t}\,\cos t+2\,e^{2\,t} \\
+\i20.  kill(f)$ \\
+\end{maximasession}
+
+Consideramos ahora el caso  $f(x,y)=x\, y+x^2+y^2$, donde $x(t)=r\, \cos(t)$,
+$y(t)=r\, \sen (t)$. Calculamos $f_r,\ f_t$:
+
+\begin{maximasession}
+f(x,y):=x*y+x^2+y^2$
+diff(f(r*cos(t),r*sin(t)),r);
+diff(f(r*cos(t),r*sin(t)),t);
+\maximaoutput*
+\i21.  f(x,y):=x*y+x^2+y^2$ \\
+\i22.  diff(f(r*cos(t),r*sin(t)),r); \\
+\o22.  2\,r\,\left(\sin t\right)^2+2\,r\,\cos t\,\sin t+2\,r\,\left(\cos t\right)^2 \\
+\i23.  diff(f(r*cos(t),r*sin(t)),t); \\
+\o23.  r^2\,\left(\cos t\right)^2-r^2\,\left(\sin t\right)^2 \\
+\end{maximasession}
+
+
+En un punto en concreto, por ejemplo $f_t(\pi ,0)$:
+\begin{maximasession}
+diff(f(r*cos(t),r*sin(t)),t)$
+%,r=%pi,t=0;
+kill(f)$
+\maximaoutput*
+\i24.  diff(f(r*cos(t),r*sin(t)),t)$ \\
+\i25.  %,r=%pi,t=0; \\
+\o25.  \pi^2 \\
+\i26.  kill(f)$ \\
+\end{maximasession}
+
+Un último ejemplo, la derivada de la función compuesta de  $f(x)=\sen x$ y  $x(t)=t^2$:
+
+\begin{maximasession}
+f(x):=sin(x)$
+diff(f(t^2),t);
+kill(f)$
+\maximaoutput*
+\i27.  f(x):=sin(x)$ \\
+\i28.  diff(f(t^2),t); \\
+\o28.  2\,t\,\cos t^2 \\
+\i29.  kill(f)$ \\
+\end{maximasession}
+
+%\section{Algunas  de las funciones componentes no están definidas explícitamente}
+
+Consideramos el caso en que  alguna de las funciones componentes de una función compuesta no
+está definida de forma explícita.  Para calcular las derivadas parciales  tendremos
+que cargar el paquete de derivadas posicionales
+\expresion{pdiff}.
+
+ Este paquete trabaja con derivadas de funciones no
+conocidas,  se representa la posición y el orden de la derivada de
+una determinada variable y no
+la variable con respecto a la que se deriva. Por ejemplo, la derivada $f_{xx}$
+de una función $f(x,y)$, se representa  usando
+\expresion{pdiff}, $D_{2,0}f(x,y)$:
+
+\begin{maximasession}
+load(pdiff)$
+diff(f(x,y),x,2);
+diff(f(x,y),x,2),use_pdiff:false;
+\maximaoutput*
+\i30.  load(pdiff)$ \\
+\i31.  diff(f(x,y),x,2); \\
+\o31.  f_{\left(2 , 0\right)}(x,y) \\
+\i32.  diff(f(x,y),x,2),use_pdiff:false; \\
+\o32.  {{d^2}\over{d\,x^2}}\,f\left(x , y\right) \\
+\end{maximasession}
+
+
+Si en un momento determinado nos interesa definir la función, podemos
+hacerlo  y posteriormente evaluar la expresión con \expresion{ev}. Por ejemplo, si $f(x,y)=xy²$, calculamos
+
+\begin{maximasession}
+ec:diff(f(x,y),x,2);
+f(x,y):=x^3*y^2;
+ev(ec);
+kill(all)$
+\maximaoutput*
+\i33.  ec:diff(f(x,y),x,2); \\
+\o33.  f_{\left(2 , 0\right)}(x,y) \\
+\i34.  f(x,y):=x^3*y^2; \\
+\o34.  f\left(x , y\right)\mathbin{:=}x^3\,y^2 \\
+\i35.  ev(ec); \\
+\o35.  6\,x\,y^2 \\
+\i36.  kill(all)$ \\
+\end{maximasession}
+
+
+
+Si representamos de esta forma las derivadas parciales, podemos calcular la
+derivada $f'$, por ejemplo, de $f(x,y)$ tal que $x(t)=e^t,\ y(t)=e^{-t}$:
+
+\begin{maximasession}
+diff( f(%e^t,%e^(-t)),t);
+\maximaoutput*
+\i1.  diff( f(%e^t,%e^(-t)),t); \\
+\o1.  e^{t}\,f_{\left(1 , 0\right)}(e^{t},e^ {- t })-e^ {- t }\,f_{\left(0 , 1\right)}(e^{t},e^ {- t }) \\
+\end{maximasession}
+
+
+
+Por otro lado,  podemos además  comprobar que algunas funciones son soluciones de ecuaciones diferenciales.  Por ejemplo, veamos que   $y=f(x-ct)+g(x+ct)$ es solución de la ecuación
+del calor $y_{tt}=c^2y_{xx}:$
+
+
+
+\begin{maximasession}
+y:f(x-c*t)+g(x+c*t)$
+is(ratsimp(diff(y,t,2)=c^2*diff(y,x,2)));
+kill(y)$
+\maximaoutput*
+\i2.  y:f(x-c*t)+g(x+c*t)$ \\
+\i3.  is(ratsimp(diff(y,t,2)=c^2*diff(y,x,2))); \\
+\o3.  \mathbf{true} \\
+\i4.  kill(y)$ \\
+\end{maximasession}
+
+
+También es útil para hacer cambios de variables en ecuaciones u operadores, por ejemplo,   en el operador
+laplaciano.  Sea $f(r)$, $r={(x^2+y^2+z^2)}^{1/2}$. Demostramos  que 
+$$f_{xx}+f_{yy}+f_{zz}=f_{rr}+\frac{2}{r}f_{r}.$$
+
+
+
+\begin{maximasession}
+aux:(x^2+y^2+z^2)^(1/2)$
+diff(f(aux),x,2)+diff(f(aux),y,2)+diff(f(aux),z,2)$
+ratsimp(%)$
+expand(%)$
+factor(%)$
+subst(r,aux,%);
+\maximaoutput*
+\i5.  aux:(x^2+y^2+z^2)^(1/2)$ \\
+\i6.  diff(f(aux),x,2)+diff(f(aux),y,2)+diff(f(aux),z,2)$ \\
+\i7.  ratsimp(%)$ \\
+\i8.  expand(%)$ \\
+\i9.  factor(%)$ \\
+\i10.  subst(r,aux,%); \\
+\o10.  {{r\,f_{\left(2\right)}(r)+2\,f_{\left(1\right)}(r)}\over{r}} \\
+\end{maximasession}
+
+En el siguiente ejemplo realizamos  un cambio de variable independiente $t=\log (x)$
+en la
+ecuación diferencial de Cauchy-Euler homogénea,
+para  transformarla en una ecuación de coeficientes constantes y fácil
+de resolver.
+
+\begin{maximasession}
+kill(all)$
+ec:a*x^2*'diff(y,x,2)+b*x*'diff(y,x)+c*y=0;
+ec:subst(f(log(x)),y,ec);
+ev(ec,diff);
+ratsimp(%);
+ec:subst(t,log(x),%);
+\maximaoutput*
+\i11.  kill(all)$ \\
+\i1.  ec:a*x^2*'diff(y,x,2)+b*x*'diff(y,x)+c*y=0; \\
+\o1.  a\,x^2\,\left({{d^2}\over{d\,x^2}}\,y\right)+b\,x\,\left({{d}\over{d\,x}}\,y\right)+c\,y=0 \\
+\i2.  ec:subst(f(log(x)),y,ec); \\
+\o2.  a\,x^2\,\left({{d^2}\over{d\,x^2}}\,f\left(\log x\right)\right)+b\,x\,\left({{d}\over{d\,x}}\,f\left(\log x\right)\right)+c\,f\left(\log x\right)=0 \\
+\i3.  ev(ec,diff); \\
+\o3.  a\,x^2\,\left({{f_{\left(2\right)}(\log x)}\over{x^2}}-{{f_{\left(1\right)}(\log x)}\over{x^2}}\right)+b\,f_{\left(1\right)}(\log x)+c\,f\left(\log x\right)=0 \\
+\i4.  ratsimp(%); \\
+\o4.  a\,f_{\left(2\right)}(\log x)+\left(b-a\right)\,f_{\left(1\right)}(\log x)+c\,f\left(\log x\right)=0 \\
+\i5.  ec:subst(t,log(x),%); \\
+\o5.  a\,f_{\left(2\right)}(t)+\left(b-a\right)\,f_{\left(1\right)}(t)+c\,f\left(t\right)=0 \\
+\end{maximasession}
+
+\begin{ejercicios}
+\item Sea $f(x,y)$, donde $x=r\, \cos t$, $y=r\, \sen t$. Comprueba
+  que se verifica 
+ $$\frac{1}{r}\frac{\partial }{\partial r}\left (r\frac{\partial
+     f}{\partial r}\right )+\frac{1}{r^2}\frac{\partial^2 f}{\partial
+       t^2}=\frac{\partial^2 f}{\partial x^2}+\frac{\partial^2
+       f}{\partial y^2}.$$
+\item Calcula las derivadas parciales primeras de $u(x,y,z)$, donde
+  $x,\ y,\ z$ son funciones de  $t$ y $s$.
+
+\item Sea la ecuación en derivadas
+  parciales $az_{xx}+bz_{xy}+cz_{yy}=0,$
+donde $a$, $b$ y $c$ son constantes arbitrarias. Demuestra que para
+que $z=f(y+mx)$ sea solución de la ecuación, debe ser $am^2+bm+c=0$.
+\item Sean
+ $$M(x,y)=y+xf(x^2+y^2),\quad N(x,y)=yf(x^2+y^2)-x.$$
+\begin{enumerate}
+\item Demuestra que $M_y(x,y)\neq N_x(x,y)$.
+\item Demuestra que $${\left (\frac{1}{x^2+y^2}M(x,y)\right )}_y={\left (\frac{1}{x^2+y^2}N(x,y)\right )}_x.$$
+\end{enumerate}
+\item Sea la
+  ecuación $$x^2\frac{d^2y}{dx^2}+(a+1)x\frac{dy}{dx}+y=0.$$
+Haz el cambio de variable independiente $x=e^t$ para transformar esta
+ecuación en esta otra de coeficientes constantes:
+
+$$\frac{d^2y}{dt^2}+a\frac{dy}{dt}+y=0.$$
+
+
+\end{ejercicios}
+
+\begin{bibliografia}
+
+
+ \item \autor{Juan de Burgos}.\titulo{Cálculo infinitesimal de varias variables}.\editorial{Mc Graw Hill}. 1999.
+\item \autor{Gerald L. Bradley, Karl Smidth}. \titulo{Cálculo de varias variables}.\editorial{Prentice Hall}. 1998.
+
+\end{bibliografia}
+
+\end{document}
